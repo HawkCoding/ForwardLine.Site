@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" data-route="home">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ForwardLine — Business Consultancy</title>
+<meta name="description" content="Quarterly business consultancy for South African owners and general managers ready to move past the ceiling they built." />
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Cinzel:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  /* No native smooth scroll — we drive snap transitions manually
+     with a long ease for a deliberate, calm commit. */
+  html { scroll-behavior: auto; }
+  body {
+    background: #F4EFE3;
+    font-family: 'Lora', Georgia, serif;
+    -webkit-font-smoothing: antialiased;
+    /* Reserve room for the fixed utility strip */
+    padding-top: 32px;
+  }
+
+  /* Page transition */
+  #app { opacity: 1; transition: opacity 0.18s ease; }
+  #app.fading { opacity: 0; }
+
+  /* Input resets */
+  input, textarea, button, select {
+    font-family: inherit;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input::placeholder, textarea::placeholder { color: #A9A39A; font-style: italic; }
+  input:focus, textarea:focus { outline: 2px solid #181E30; outline-offset: 1px; }
+
+  /* Link base */
+  a { color: inherit; transition: opacity .2s ease; }
+  a:hover { opacity: .78; }
+
+  /* ── Scrollbar — recessed sand track with a weighted brass thumb ──
+     Track sits slightly darker than the page so it reads as inset.
+     Thumb uses a vertical gradient + inset highlights + an outer
+     shadow so it feels like a solid handle resting in the channel,
+     not a flat painted bar. Padding via transparent border keeps the
+     thumb visually slimmer than the track so the recess shows. */
+  ::-webkit-scrollbar { width: 12px; }
+  ::-webkit-scrollbar-track {
+    background: #EDE6D5;
+    box-shadow:
+      inset 1px 0 0 rgba(24,30,48,.06),
+      inset -1px 0 0 rgba(255,255,255,.5);
+  }
+  ::-webkit-scrollbar-thumb {
+    background:
+      linear-gradient(180deg,
+        #B6A684 0%,
+        #9C8B6A 45%,
+        #8E7D5C 55%,
+        #B6A684 100%);
+    border: 2px solid #EDE6D5;       /* visual inset from track */
+    border-radius: 8px;
+    box-shadow:
+      inset 1px 0 0 rgba(255,255,255,.45),  /* left highlight */
+      inset -1px 0 0 rgba(24,30,48,.20),    /* right shadow */
+      inset 0 1px 0 rgba(255,255,255,.30),  /* top sheen */
+      inset 0 -1px 0 rgba(24,30,48,.18),    /* bottom shade */
+      0 1px 2px rgba(24,30,48,.18);         /* drop, sits-on-track */
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background:
+      linear-gradient(180deg,
+        #A89878 0%,
+        #8C7B5A 45%,
+        #7E6D4C 55%,
+        #A89878 100%);
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:active {
+    background:
+      linear-gradient(180deg,
+        #9A8A6A 0%,
+        #7E6D4C 50%,
+        #9A8A6A 100%);
+    background-clip: padding-box;
+  }
+  /* Firefox */
+  html { scrollbar-color: #9C8B6A #EDE6D5; scrollbar-width: thin; }
+
+  /* ── Eased snap-scroll — desktop, HOME page only ──
+     We deliberately do NOT use CSS scroll-snap-type:mandatory here —
+     it conflicts with sections that overflow the viewport (e.g. the
+     resonance block: testimonial + stats frieze), preventing the user
+     from reaching content below the fold and from reaching sections
+     beyond it. Instead, the JS engine in fl-snap.js handles snap
+     entirely: it tweens between sections with a long ease, and lets
+     native scroll pass through when there's overflow content to read
+     or when the user is scrolling into the footer. */
+  @media (min-width: 1024px) {
+    html[data-route="home"] {
+      scroll-padding-top: 32px;
+    }
+  }
+
+  /* ── Reveal-on-enter ──
+     Sections expose .fl-reveal children that lift 10px and fade in
+     when the parent gains .is-in. Stagger via .fl-r1 … .fl-r5. */
+  .fl-reveal {
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity .75s cubic-bezier(.22,.61,.36,1),
+      transform .75s cubic-bezier(.22,.61,.36,1);
+    will-change: opacity, transform;
+  }
+  .fl-reveal-host.is-in .fl-reveal { opacity: 1; transform: translateY(0); }
+  .fl-r1 { transition-delay: 0ms; }
+  .fl-r2 { transition-delay: 120ms; }
+  .fl-r3 { transition-delay: 240ms; }
+  .fl-r4 { transition-delay: 360ms; }
+  .fl-r5 { transition-delay: 480ms; }
+  .fl-r6 { transition-delay: 600ms; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fl-reveal { opacity: 1 !important; transform: none !important; }
+    html { scroll-behavior: auto !important; }
+  }
+
+  /* ── Section rail (imperial) ── */
+  .fl-rail-wrap {
+    position: fixed;
+    right: 24px;
+    top: calc(50% + 16px); /* nudge below the fixed strip's centerline */
+    transform: translateY(-50%);
+    z-index: 40;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .8s cubic-bezier(.22,.61,.36,1);
+  }
+  .fl-rail-wrap.is-visible { opacity: 1; }
+  .fl-rail-svg { display: block; filter: drop-shadow(0 1px 2px rgba(24,30,48,.10)) drop-shadow(0 4px 14px rgba(24,30,48,.06)); }
+  .fl-rail-fill { transition: height .55s cubic-bezier(.22,.61,.36,1); }
+
+  @media (max-width: 1023px) { .fl-rail-wrap { display: none; } }
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<!-- Eased snap-scroller (vanilla, no React dep) -->
+<script src="fl-snap.js"></script>
+
+<!-- Component scripts — order matters: shared must load first -->
+<script type="text/babel" src="fl-shared.jsx"></script>
+<script type="text/babel" src="fl-home.jsx"></script>
+<script type="text/babel" src="fl-wwd.jsx"></script>
+<script type="text/babel" src="fl-contact.jsx"></script>
+
+<script type="text/babel">
+/* ─────────────────────────────────────────────
+   Router + App shell
+   Uses hash routing: #/ #/wwd #/contact
+   Sets <html data-route> so route-scoped CSS
+   (e.g. mandatory snap on home) can apply.
+   ───────────────────────────────────────────── */
+
+function useRoute() {
+  const getRoute = () => {
+    const hash = window.location.hash || '#/';
+    if (hash.startsWith('#/wwd'))     return 'wwd';
+    if (hash.startsWith('#/contact')) return 'contact';
+    return 'home';
+  };
+  const [route, setRoute] = React.useState(getRoute);
+  React.useEffect(() => {
+    document.documentElement.dataset.route = route;
+  }, [route]);
+  React.useEffect(() => {
+    const handler = () => {
+      const next = getRoute();
+      const app = document.getElementById('app');
+      app.classList.add('fading');
+      setTimeout(() => {
+        setRoute(next);
+        document.documentElement.dataset.route = next;
+        app.classList.remove('fading');
+        window.scrollTo(0, 0);
+      }, 180);
+    };
+    window.addEventListener('hashchange', handler);
+    return () => window.removeEventListener('hashchange', handler);
+  }, []);
+  return route;
+}
+
+function App() {
+  const route = useRoute();
+  return (
+    <>
+      <FLUtilityStrip />
+      {route === 'home'    && <FLHome />}
+      {route === 'wwd'     && <FLWhatWeDo />}
+      {route === 'contact' && <FLContact />}
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('app'));
+root.render(<App />);
+</script>
+</body>
+</html>

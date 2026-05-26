@@ -1,0 +1,312 @@
+/* ─────────────────────────────────────────────
+   ForwardLine — Contact page (website)
+   Wired to Formspree for form submissions
+   ───────────────────────────────────────────── */
+
+function FLField({ label, hint, height = 52, type = 'text', textarea = false, placeholder = '', name, required = false }) {
+  return (
+    <label style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <span style={{ fontFamily: FL_CAPS, fontSize: 10, letterSpacing: 3, textTransform: 'uppercase', color: FL_GRAPHITE, fontWeight: 500 }}>
+        {label}
+        {hint && <span style={{ textTransform: 'none', letterSpacing: 0.5, color: FL_STONE, fontFamily: FL_BODY, fontStyle: 'italic', marginLeft: 6 }}>— {hint}</span>}
+      </span>
+      {textarea ? (
+        <textarea
+          name={name}
+          placeholder={placeholder}
+          required={required}
+          style={{
+            minHeight: height, padding: '14px 16px', resize: 'vertical',
+            background: 'transparent', border: `1px solid ${FL_SAND}`,
+            fontFamily: FL_BODY, fontSize: 15, color: FL_NAVY,
+            borderRadius: 0, outline: 'none',
+          }}
+        />
+      ) : (
+        <input
+          type={type}
+          name={name}
+          placeholder={placeholder}
+          required={required}
+          style={{
+            height: height, padding: '0 16px',
+            background: 'transparent', border: `1px solid ${FL_SAND}`,
+            fontFamily: FL_BODY, fontSize: 15, color: FL_NAVY,
+            borderRadius: 0, outline: 'none',
+          }}
+        />
+      )}
+    </label>
+  );
+}
+
+function FLContact() {
+  const bp = useBreakpoint();
+  const isMobile = bp === 'sm' || bp === 'xs';
+  const [stage, setStage]   = React.useState('Founder-led');
+  const [status, setStatus] = React.useState('idle'); // idle | sending | success | error
+
+  const intake = useFLIntake();
+  const isCurrentFull = intake.currentBooked >= intake.currentTotal;
+  const featuredQ      = isCurrentFull ? intake.nextQuarter       : intake.currentQuarter;
+  const featuredMonths = isCurrentFull ? intake.nextQuarterMonths : intake.currentQuarterMonths;
+  const featuredBooked = isCurrentFull ? intake.nextBooked        : intake.currentBooked;
+  const featuredTotal  = isCurrentFull ? intake.nextTotal         : intake.currentTotal;
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setStatus('sending');
+    const data = new FormData(e.target);
+    data.append('_stage', stage);
+    try {
+      // Replace YOUR_FORM_ID below with your Formspree form ID
+      const res = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: data,
+      });
+      if (res.ok) {
+        setStatus('success');
+        e.target.reset();
+      } else {
+        setStatus('error');
+      }
+    } catch (_) {
+      setStatus('error');
+    }
+  }
+
+  return (
+    <div style={{ background: FL_IVORY, fontFamily: FL_BODY, color: FL_NAVY }}>
+      <FLNav active="Contact" />
+
+      {/* ── Header photo ── */}
+      <section style={{ position: 'relative', height: isMobile ? 260 : 360 }}>
+        <FLPhoto src={FL_IMG.kanban} overlay={0.7} style={{ position: 'absolute', inset: 0 }} />
+        <div style={{
+          position: 'relative', zIndex: 1, height: '100%',
+          display: 'flex', flexDirection: 'column', alignItems: 'center',
+          justifyContent: 'center', textAlign: 'center',
+          padding: '0 24px', gap: 22,
+        }}>
+          <FLEyebrow color="rgba(244,239,227,.78)">Begin the Conversation</FLEyebrow>
+          <h1 style={{
+            margin: 0, fontFamily: FL_DISPLAY,
+            fontSize: isMobile ? 32 : 60,
+            lineHeight: 1.08, fontWeight: 500, color: FL_IVORY_2, letterSpacing: -0.5, maxWidth: 880,
+          }}>
+            The first conversation costs nothing.<br />
+            <span style={{ fontStyle: 'italic', color: FL_SAND_2 }}>The missed quarter might.</span>
+          </h1>
+          <FLDivider color="rgba(244,239,227,.3)" mark={FL_SAND_2} width="120px" />
+        </div>
+      </section>
+
+      {/* ── Main grid ── */}
+      <section style={{ padding: isMobile ? '60px 24px' : '100px 40px' }}>
+        <div style={{
+          maxWidth: 1200, margin: '0 auto',
+          display: 'grid',
+          gridTemplateColumns: isMobile ? '1fr' : '5fr 7fr',
+          gap: isMobile ? 56 : 80, alignItems: 'start',
+        }}>
+
+          {/* LEFT — scarcity panel */}
+          <aside style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <FLEyebrow>Current Availability</FLEyebrow>
+              <h2 style={{ margin: 0, fontFamily: FL_DISPLAY, fontSize: isMobile ? 36 : 48, fontWeight: 500, color: FL_NAVY, lineHeight: 1.05, letterSpacing: -0.4 }}>
+                {featuredQ}<br />
+                <span style={{ fontStyle: 'italic', color: FL_GRAPHITE, fontSize: isMobile ? 26 : 36 }}>{featuredMonths}</span>
+              </h2>
+            </div>
+
+            <div style={{ padding: '32px', border: `1px solid ${FL_SAND}`, background: FL_IVORY_2, display: 'flex', flexDirection: 'column', gap: 20 }}>
+              <div style={{ padding: '10px 16px', background: FL_NAVY, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontFamily: FL_CAPS, fontSize: 9, letterSpacing: 3, textTransform: 'uppercase', color: 'rgba(244,239,227,.6)' }}>{intake.currentQuarter} · {intake.currentQuarterMonths}</span>
+                <span style={{ fontFamily: FL_CAPS, fontSize: 9, letterSpacing: 3, textTransform: 'uppercase', color: FL_SAND_2 }}>{flTakenPhrase(intake.currentBooked, intake.currentTotal)}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                <FLEyebrow color={FL_NAVY}>{featuredQ} · Intake</FLEyebrow>
+                <span style={{ fontFamily: FL_DISPLAY, fontSize: 16, color: FL_GRAPHITE, fontStyle: 'italic' }}>{flLeftPhrase(featuredBooked, featuredTotal).toLowerCase()}</span>
+              </div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                {Array.from({ length: featuredTotal }, (_, idx) => idx + 1).map(i => {
+                  const taken = i <= featuredBooked;
+                  return (
+                    <div key={i} style={{
+                      flex: 1, height: 44, border: `1px solid ${FL_SAND}`,
+                      background: taken ? FL_NAVY : 'transparent',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative',
+                    }}>
+                      <span style={{ fontFamily: FL_CAPS, fontSize: 9, letterSpacing: 2, color: taken ? 'rgba(244,239,227,.5)' : FL_GRAPHITE }}>0{i}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: FL_CAPS, fontSize: 9, letterSpacing: 2.5, textTransform: 'uppercase', color: FL_GRAPHITE }}>
+                <span>
+                  <span style={{ display: 'inline-block', width: 8, height: 8, background: FL_NAVY, marginRight: 6, transform: 'translateY(1px)' }} />
+                  Reserved
+                </span>
+                <span>Applications close when full</span>
+              </div>
+            </div>
+
+            {/* Direct lines */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <FLEyebrow>Direct Lines</FLEyebrow>
+              <a href="mailto:forwardlinesa@gmail.com" style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14,
+                padding: '18px 22px', border: `1px solid ${FL_NAVY}`, color: FL_NAVY,
+                textDecoration: 'none', fontFamily: FL_CAPS, fontSize: 11, letterSpacing: 3, textTransform: 'uppercase',
+              }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                  <svg width="20" height="16" viewBox="0 0 24 18" fill="none" stroke="currentColor" strokeWidth="1.6">
+                    <rect x="1" y="1" width="22" height="16" />
+                    <path d="M1 2 L12 11 L23 2" />
+                  </svg>
+                  forwardlinesa@gmail.com
+                </span>
+              </a>
+              <a href="tel:+27630977801" style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14,
+                padding: '18px 22px', border: `1px solid ${FL_NAVY}`, color: FL_NAVY,
+                textDecoration: 'none', fontFamily: FL_CAPS, fontSize: 11, letterSpacing: 3, textTransform: 'uppercase',
+              }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                    <path d="M5 3 L9 3 L11 8 L8 10 C9.5 13 11 14.5 14 16 L16 13 L21 15 L21 19 C21 20 20 21 19 21 C10 21 3 14 3 5 C3 4 4 3 5 3 Z" />
+                  </svg>
+                  063 097 7801
+                </span>
+                <span style={{ fontFamily: FL_BODY, fontSize: 13, textTransform: 'none', letterSpacing: 0, color: FL_GRAPHITE, fontStyle: 'italic' }}>Mon – Fri · SAST</span>
+              </a>
+              <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
+                <a href="https://www.linkedin.com/company/forwardline/" target="_blank" rel="noopener" style={{
+                  flex: 1, padding: '14px 16px', border: `1px solid ${FL_SAND}`, color: FL_NAVY,
+                  textDecoration: 'none', fontFamily: FL_CAPS, fontSize: 10, letterSpacing: 2.5, textTransform: 'uppercase',
+                  textAlign: 'center', background: FL_IVORY_2,
+                }}>LinkedIn</a>
+                <a href="https://www.facebook.com/ForwardLineSA/" target="_blank" rel="noopener" style={{
+                  flex: 1, padding: '14px 16px', border: `1px solid ${FL_SAND}`, color: FL_NAVY,
+                  textDecoration: 'none', fontFamily: FL_CAPS, fontSize: 10, letterSpacing: 2.5, textTransform: 'uppercase',
+                  textAlign: 'center', background: FL_IVORY_2,
+                }}>Facebook</a>
+              </div>
+            </div>
+          </aside>
+
+          {/* RIGHT — application form */}
+          <div style={{ padding: isMobile ? '32px 24px' : '40px 44px', background: FL_IVORY_2, border: `1px solid ${FL_LINEN}` }}>
+            {status === 'success' ? (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24, padding: '60px 0', textAlign: 'center' }}>
+                <div style={{ width: 56, height: 56, border: `1px solid ${FL_NAVY}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="24" height="20" viewBox="0 0 24 20" fill="none" stroke={FL_NAVY} strokeWidth="1.8">
+                    <path d="M2 10 L9 17 L22 3" strokeLinecap="square" />
+                  </svg>
+                </div>
+                <h2 style={{ margin: 0, fontFamily: FL_DISPLAY, fontSize: 36, fontWeight: 500, color: FL_NAVY }}>Application Received</h2>
+                <p style={{ margin: 0, fontFamily: FL_BODY, fontSize: 15, color: FL_GRAPHITE, lineHeight: 1.75, maxWidth: 400 }}>
+                  Thank you. We will read your application and come back to you within one business day to schedule the call.
+                </p>
+                <button onClick={() => setStatus('idle')} style={{ marginTop: 8, fontFamily: FL_CAPS, fontSize: 10, letterSpacing: 3, textTransform: 'uppercase', color: FL_GRAPHITE, background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}>
+                  Submit another application
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
+                  <FLEyebrow>Apply for a Discovery Call</FLEyebrow>
+                  <span style={{ fontFamily: FL_CAPS, fontSize: 9, letterSpacing: 2.5, textTransform: 'uppercase', color: FL_STONE }}>Step 1 of 1 · 2 minutes</span>
+                </div>
+                <h2 style={{ margin: '14px 0 8px', fontFamily: FL_DISPLAY, fontSize: isMobile ? 28 : 38, fontWeight: 500, color: FL_NAVY, lineHeight: 1.1, letterSpacing: -0.3 }}>
+                  Tell us a little about your business.
+                </h2>
+                <p style={{ margin: '0 0 32px', fontSize: 14, color: FL_GRAPHITE, lineHeight: 1.75, fontFamily: FL_BODY, maxWidth: 520 }}>
+                  Tell us where the business is and where it is stuck. We will come back to you within one business day to schedule the discovery call.
+                </p>
+
+                <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 22 }}>
+                  <FLField label="Full Name"  name="name"    placeholder="e.g. Helena Marsh"      required />
+                  <FLField label="Company"    name="company" placeholder="e.g. Marsh & Co." />
+                  <FLField label="Email"      name="email"   type="email" placeholder="helena@example.com" required />
+                  <FLField label="Phone"      name="phone"   hint="optional" type="tel" placeholder="+27…" />
+                </div>
+
+                <div style={{ marginTop: 22, display: 'flex', flexDirection: 'column', gap: 22 }}>
+                  {/* Stage selector */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    <span style={{ fontFamily: FL_CAPS, fontSize: 10, letterSpacing: 3, textTransform: 'uppercase', color: FL_GRAPHITE }}>Your role</span>
+                    <div style={{ display: 'flex', gap: 0, border: `1px solid ${FL_SAND}`, flexWrap: 'wrap' }}>
+                      {['Founder-led', 'GM / COO', 'Leadership Team', 'Other'].map((s, i, arr) => (
+                        <div key={s} onClick={() => setStage(s)} style={{
+                          flex: 1, minWidth: isMobile ? '50%' : undefined,
+                          padding: '14px 12px', textAlign: 'center',
+                          borderRight: i < arr.length - 1 ? `1px solid ${FL_SAND}` : 'none',
+                          fontFamily: FL_CAPS, fontSize: 10, letterSpacing: 2.5, textTransform: 'uppercase',
+                          color: stage === s ? FL_IVORY_2 : FL_NAVY,
+                          background: stage === s ? FL_NAVY : 'transparent',
+                          cursor: 'pointer', transition: 'all .15s ease',
+                        }}>{s}</div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <FLField
+                    label="What is your main challenge right now?"
+                    hint="2–3 sentences is plenty"
+                    name="challenge"
+                    textarea height={140}
+                    placeholder="Margins are tightening, the leadership team feels stretched, and we cannot tell whether it is a strategy problem or an operations problem…"
+                    required
+                  />
+
+                  <FLField
+                    label="Quarter you're applying for"
+                    hint="we will confirm availability"
+                    name="quarter"
+                    placeholder={`${featuredQ} — preferred`}
+                  />
+                </div>
+
+                {status === 'error' && (
+                  <p style={{ margin: '16px 0 0', fontFamily: FL_BODY, fontSize: 13, color: '#B94040', lineHeight: 1.6 }}>
+                    Something went wrong. Please try emailing us directly at forwardlinesa@gmail.com
+                  </p>
+                )}
+
+                <div style={{ marginTop: 32, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24, paddingTop: 24, borderTop: `1px solid ${FL_LINEN}`, flexWrap: 'wrap' }}>
+                  <span style={{ fontFamily: FL_DISPLAY, fontStyle: 'italic', fontSize: 16, color: FL_GRAPHITE, maxWidth: 360 }}>
+                    We respond within one business day.
+                  </span>
+                  <FLButton type="submit" disabled={status === 'sending'} variant="filled">
+                    {status === 'sending' ? 'Sending…' : 'Send Application →'}
+                  </FLButton>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Reassurance band ── */}
+      <section style={{ background: FL_LINEN, padding: '48px 24px' }}>
+        <div style={{
+          maxWidth: 1200, margin: '0 auto',
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          gap: 16, fontFamily: FL_CAPS, fontSize: 10, letterSpacing: 3, textTransform: 'uppercase', color: FL_GRAPHITE,
+          flexWrap: 'wrap',
+        }}>
+          {['◆ One business day reply', 'Direct line to the team', 'No-obligation discovery call', 'Confidential by default'].map(t => (
+            <span key={t}>{t}</span>
+          ))}
+        </div>
+      </section>
+
+      <FLFooter />
+    </div>
+  );
+}
+
+window.FLContact = FLContact;
