@@ -500,6 +500,7 @@ function FLNav({ active = 'Home', onDark = false }) {
   const links  = [
     { id:'Home',       label:'Home',       href:'#/' },
     { id:'What We Do', label:'What We Do', href:'#/wwd' },
+    { id:'Free Tools', label:'Free Tools', href:'#/tools' },
     { id:'Contact',    label:'Contact',    href:'#/contact' },
   ];
   return (
@@ -609,7 +610,7 @@ function FLFooter() {
           </p>
         </div>
         {[
-          { title:'Navigate',   items:[['Home','#/',null],['What We Do','#/wwd',null],['Contact','#/contact',null]] },
+          { title:'Navigate',   items:[['Home','#/',null],['What We Do','#/wwd',null],['Free Tools','#/tools',null],['Contact','#/contact',null]] },
           { title:'Engagement', items:[['The Quarter','#/wwd',null],['Process','#/wwd','fl-wwd-process'],["What's Included",'#/wwd','fl-wwd-included']] },
           { title:'Reach Us',   items:[['forwardlinesa@gmail.com','mailto:forwardlinesa@gmail.com',null],['LinkedIn','https://www.linkedin.com/company/forwardline/',null],['Facebook','https://www.facebook.com/ForwardLineSA/',null]] },
         ].map(col => (
