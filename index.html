@@ -175,6 +175,7 @@
 <script type="text/babel" src="fl-shared.jsx"></script>
 <script type="text/babel" src="fl-home.jsx"></script>
 <script type="text/babel" src="fl-wwd.jsx"></script>
+<script type="text/babel" src="fl-tools.jsx"></script>
 <script type="text/babel" src="fl-contact.jsx"></script>
 
 <script type="text/babel">
@@ -190,11 +191,15 @@ function useRoute() {
     const hash = window.location.hash || '#/';
     if (hash.startsWith('#/wwd'))     return 'wwd';
     if (hash.startsWith('#/contact')) return 'contact';
+    if (hash.startsWith('#/tools')) {
+      const m = hash.match(/^#\/tools\/([^?#/]+)/);
+      return m ? 'tools/' + m[1] : 'tools';
+    }
     return 'home';
   };
   const [route, setRoute] = React.useState(getRoute);
   React.useEffect(() => {
-    document.documentElement.dataset.route = route;
+    document.documentElement.dataset.route = route.split('/')[0];
   }, [route]);
   React.useEffect(() => {
     const handler = () => {
@@ -203,7 +208,7 @@ function useRoute() {
       app.classList.add('fading');
       setTimeout(() => {
         setRoute(next);
-        document.documentElement.dataset.route = next;
+        document.documentElement.dataset.route = next.split('/')[0];
         app.classList.remove('fading');
         window.scrollTo(0, 0);
       }, 180);
@@ -216,11 +221,14 @@ function useRoute() {
 
 function App() {
   const route = useRoute();
+  const isTools  = route === 'tools' || route.startsWith('tools/');
+  const toolSlug = route.startsWith('tools/') ? route.slice('tools/'.length) : null;
   return (
     <>
       <FLUtilityStrip />
       {route === 'home'    && <FLHome />}
       {route === 'wwd'     && <FLWhatWeDo />}
+      {isTools             && <FLTools slug={toolSlug} />}
       {route === 'contact' && <FLContact />}
     </>
   );
