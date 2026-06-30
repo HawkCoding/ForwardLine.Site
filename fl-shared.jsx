@@ -846,19 +846,19 @@ function FLConsent() {
       <div style={{ marginTop: 20, display: 'flex', flexDirection: 'column', gap: 10 }}>
         {expanded ? (
           <FLButton variant="filled" track="Consent · Save Choices"
-            onClick={() => choose(analyticsOn ? 'granted' : 'denied')}
+            onClick={(e) => { e.preventDefault(); choose(analyticsOn ? 'granted' : 'denied'); }}
             style={{ width: '100%', padding: '12px 20px' }}>
             Save Choices
           </FLButton>
         ) : (
           <div style={{ display: 'flex', gap: 10 }}>
             <FLButton variant="filled" track="Consent · Accept"
-              onClick={() => choose('granted')}
+              onClick={(e) => { e.preventDefault(); choose('granted'); }}
               style={{ flex: 1, padding: '12px 20px' }}>
               Accept
             </FLButton>
             <FLButton variant="outline" track="Consent · Necessary Only"
-              onClick={() => choose('denied')}
+              onClick={(e) => { e.preventDefault(); choose('denied'); }}
               style={{ flex: 1, padding: '12px 20px' }}>
               Necessary Only
             </FLButton>
