@@ -301,6 +301,94 @@ function FLToolWidget({ tool }) {
   );
 }
 
+/* ── Featured "input" card (CAC / LTV) ──
+   The two figures that feed the ratio below. Lighter than the hero. */
+function FLFeaturedInput({ tool, isMobile, delay = 'fl-r2' }) {
+  const [hover, setHover] = React.useState(false);
+  if (!tool) return null;
+  const live = !!tool.html;
+  return (
+    <a
+      href={`#/tools/${tool.slug}`}
+      className={`fl-reveal ${delay}`}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        flex: 1, minWidth: 0, position: 'relative',
+        display: 'flex', flexDirection: 'column', gap: 12,
+        padding: isMobile ? '26px 24px' : '30px 32px',
+        border: `1px solid ${FL_SAND}`, background: FL_IVORY_2,
+        textDecoration: 'none', color: FL_NAVY,
+        boxShadow: hover ? '0 10px 30px rgba(24,30,48,.08)' : 'none',
+        transform: hover ? 'translateY(-2px)' : 'none',
+        transition: 'box-shadow .25s ease, transform .25s ease',
+      }}
+    >
+      <span style={{ position: 'absolute', top: 0, left: 0, height: 2, width: hover ? '100%' : 0, background: FL_GOLD, transition: 'width .35s cubic-bezier(.22,.61,.36,1)' }} />
+      <span style={{ fontFamily: FL_CAPS, fontSize: 9, letterSpacing: 2.5, textTransform: 'uppercase', color: FL_GOLD }}>{tool.kind}</span>
+      <h3 style={{ margin: 0, fontFamily: FL_DISPLAY, fontSize: isMobile ? 26 : 30, fontWeight: 600, color: FL_NAVY, lineHeight: 1.1 }}>{tool.title}</h3>
+      <p style={{ margin: 0, fontSize: 14, color: FL_GRAPHITE, lineHeight: 1.7, flex: 1 }}>{tool.blurb}</p>
+      <span style={{ fontFamily: FL_CAPS, fontSize: 10, letterSpacing: 2.5, textTransform: 'uppercase', color: hover ? FL_NAVY : FL_GRAPHITE, display: 'inline-flex', alignItems: 'center', gap: 8, transition: 'color .25s ease' }}>
+        {live ? 'Open Tool' : 'Coming Soon'}
+        <span style={{ display: 'inline-block', transform: hover ? 'translateX(4px)' : 'none', transition: 'transform .25s ease' }}>→</span>
+      </span>
+    </a>
+  );
+}
+
+/* ── Featured hero — the LTV:CAC ratio ──
+   The payoff that combines the two inputs above; navy + gold, the
+   site's "this one matters" styling (cf. the Discovery Call block). */
+function FLFeaturedHero({ tool, isMobile }) {
+  const [hover, setHover] = React.useState(false);
+  if (!tool) return null;
+  const live = !!tool.html;
+  return (
+    <a
+      href={`#/tools/${tool.slug}`}
+      className="fl-reveal fl-r4"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        display: 'block', textDecoration: 'none', color: FL_IVORY_2,
+        background: FL_NAVY,
+        backgroundImage: 'radial-gradient(circle at 18% 0%, rgba(167,138,78,.16), transparent 55%), radial-gradient(circle at 85% 120%, rgba(196,184,163,.10), transparent 55%)',
+        border: `1px solid ${FL_NAVY}`,
+        padding: isMobile ? '30px 26px' : '40px 48px',
+        position: 'relative', overflow: 'hidden',
+        boxShadow: hover ? '0 16px 44px rgba(24,30,48,.22)' : '0 8px 24px rgba(24,30,48,.12)',
+        transition: 'box-shadow .25s ease',
+      }}
+    >
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.5fr 1fr', gap: isMobile ? 22 : 48, alignItems: 'center' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 12, alignSelf: 'flex-start', padding: '8px 0', borderTop: `1px solid ${FL_GOLD}`, borderBottom: `1px solid ${FL_GOLD}` }}>
+            <span style={{ color: FL_GOLD, fontSize: 8, letterSpacing: 4, transform: 'translateY(-1px)' }}>◆</span>
+            <span style={{ fontFamily: FL_CAPS, fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: FL_SAND_2, fontWeight: 600 }}>The Power Metric</span>
+            <span style={{ color: FL_GOLD, fontSize: 8, letterSpacing: 4, transform: 'translateY(-1px)' }}>◆</span>
+          </div>
+          <h3 style={{ margin: 0, fontFamily: FL_DISPLAY, fontSize: isMobile ? 38 : 54, fontWeight: 500, color: FL_IVORY_2, lineHeight: 1.02, letterSpacing: -0.5 }}>
+            LTV <span style={{ color: FL_SAND_2 }}>:</span> CAC Ratio
+          </h3>
+          <p style={{ margin: 0, fontSize: 15, color: 'rgba(244,239,227,.78)', lineHeight: 1.75, maxWidth: 540 }}>
+            {tool.blurb}
+          </p>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14, alignItems: isMobile ? 'flex-start' : 'flex-end' }}>
+          <div style={{ textAlign: isMobile ? 'left' : 'right' }}>
+            <div style={{ fontFamily: FL_DISPLAY, fontSize: isMobile ? 48 : 64, fontWeight: 500, color: FL_SAND_2, lineHeight: 1, letterSpacing: -1 }}>3:1</div>
+            <div style={{ fontFamily: FL_CAPS, fontSize: 9.5, letterSpacing: 2.5, textTransform: 'uppercase', color: 'rgba(244,239,227,.6)', marginTop: 6 }}>A healthy benchmark</div>
+          </div>
+          <span style={{ fontFamily: FL_CAPS, fontSize: 11, letterSpacing: 2.6, textTransform: 'uppercase', color: hover ? FL_IVORY_2 : FL_SAND_2, display: 'inline-flex', alignItems: 'center', gap: 10, transition: 'color .25s ease' }}>
+            {live ? 'Open Tool' : 'Coming Soon'}
+            <span style={{ display: 'inline-block', transform: hover ? 'translateX(4px)' : 'none', transition: 'transform .25s ease' }}>→</span>
+          </span>
+        </div>
+      </div>
+    </a>
+  );
+}
+
 /* ── Gallery (landing) ── */
 function FLTools({ slug = null }) {
   const bp = useBreakpoint();
@@ -364,6 +452,47 @@ function FLTools({ slug = null }) {
         </div>
       </FLSection>
 
+      {/* ── 1b. Featured numbers — the headline trio ──
+           CAC + LTV are the two inputs; the LTV:CAC ratio below their
+           intersection is the payoff and gets the hero treatment. */}
+      <FLSection
+        id="fl-tools-featured"
+        style={{
+          minHeight: sectionMinH,
+          background: FL_IVORY_2,
+          display: 'flex', alignItems: 'center',
+          padding: isMobile ? '64px 24px' : '64px 40px',
+        }}
+      >
+        <div style={{ maxWidth: 1100, margin: '0 auto', width: '100%' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: isMobile ? 28 : 40, maxWidth: 760 }}>
+            <FLEyebrow className="fl-reveal fl-r1">Start Here</FLEyebrow>
+            <h2 className="fl-reveal fl-r2" style={{ margin: 0, fontFamily: FL_DISPLAY, fontSize: isMobile ? 32 : 50, lineHeight: 1.04, fontWeight: 500, color: FL_NAVY, letterSpacing: -0.5 }}>
+              The numbers <span style={{ fontStyle: 'italic' }}>every</span> business owner should know.
+            </h2>
+            <p className="fl-reveal fl-r3" style={{ margin: 0, fontSize: 15, color: FL_GRAPHITE, lineHeight: 1.8 }}>
+              Two figures sit beneath almost every growth decision: what a customer costs you to win, and what one is worth. Know both — and the ratio between them — and you can see, in a single number, whether your growth is paying for itself.
+            </p>
+          </div>
+
+          {/* The two inputs */}
+          <div style={{ display: 'flex', gap: isMobile ? 16 : 24, flexDirection: isMobile ? 'column' : 'row', alignItems: 'stretch' }}>
+            <FLFeaturedInput tool={flToolBySlug('cac')} isMobile={isMobile} delay="fl-r2" />
+            <FLFeaturedInput tool={flToolBySlug('ltv')} isMobile={isMobile} delay="fl-r3" />
+          </div>
+
+          {/* Connector — they combine into the ratio */}
+          <div className="fl-reveal fl-r3" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, padding: isMobile ? '16px 0' : '20px 0' }}>
+            <span style={{ width: 1, height: isMobile ? 18 : 24, background: FL_SAND }} />
+            <span style={{ fontFamily: FL_CAPS, fontSize: 10, letterSpacing: 3, textTransform: 'uppercase', color: FL_GRAPHITE }}>LTV ÷ CAC</span>
+            <span style={{ color: FL_GOLD, fontSize: 9, letterSpacing: 4 }}>▼</span>
+          </div>
+
+          {/* The payoff */}
+          <FLFeaturedHero tool={flToolBySlug('ltv-cac')} isMobile={isMobile} />
+        </div>
+      </FLSection>
+
       {/* ── 2. The toolkit grid ── */}
       <FLSection
         id="fl-tools-grid"
@@ -379,7 +508,7 @@ function FLTools({ slug = null }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <FLEyebrow className="fl-reveal fl-r1">The Toolkit</FLEyebrow>
               <h2 className="fl-reveal fl-r2" style={{ margin: 0, fontFamily: FL_DISPLAY, fontSize: isMobile ? 30 : 44, lineHeight: 1.05, fontWeight: 500, color: FL_NAVY, letterSpacing: -0.4 }}>
-                Eight ways to see <span style={{ fontStyle: 'italic' }}>your</span> numbers clearly.
+                The full toolkit, <span style={{ fontStyle: 'italic' }}>in one place.</span>
               </h2>
             </div>
             <p className="fl-reveal fl-r3" style={{ margin: 0, fontSize: 14.5, color: FL_GRAPHITE, lineHeight: 1.8, paddingTop: isMobile ? 0 : 8 }}>
