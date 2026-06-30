@@ -374,8 +374,25 @@ function FLDivider({ color = FL_SAND, mark = FL_NAVY, width = '100%' }) {
   );
 }
 
+/* ─────────────────────────────────────────────
+   Analytics helpers (GA4 / gtag)
+   Thin, safe wrappers — no-op if gtag isn't loaded
+   (e.g. blocked by an extension) so the UI never breaks.
+   ───────────────────────────────────────────── */
+function flTrack(name, params) {
+  try {
+    if (typeof window.gtag === 'function') window.gtag('event', name, params || {});
+  } catch (e) { /* analytics must never break the page */ }
+}
+/* Reusable tool tracker — for the future tools section.
+   Usage from any tool: flTrackTool('roi-calculator', 'open')
+   GA then ranks tools by tool_name under the tool_interaction event. */
+function flTrackTool(toolName, action) {
+  flTrack('tool_interaction', { tool_name: toolName, tool_action: action || 'open' });
+}
+
 /* ── Button — <a> or <button type=submit> ── */
-function FLButton({ children, variant = 'filled', href, onClick, style: extra = {}, type, disabled, ...rest }) {
+function FLButton({ children, variant = 'filled', href, onClick, style: extra = {}, type, disabled, track, ...rest }) {
   const base = {
     display:'inline-flex', alignItems:'center', justifyContent:'center', gap:10,
     padding:'14px 28px', fontSize:11, fontFamily: FL_CAPS,
@@ -393,10 +410,27 @@ function FLButton({ children, variant = 'filled', href, onClick, style: extra = 
     whatsapp: { background:'transparent', color:'#1B7A47', border:'1px solid #1B7A47' },
   };
   const s = { ...base, ...flVariants[variant], ...extra };
+
+  /* Every CTA flows through here, so one handler tracks them all.
+     Label comes from `track` if given, else the button text (arrow
+     and trailing whitespace stripped). */
+  const ctaLabel = track
+    || (typeof children === 'string' ? children.replace(/[→\s]+$/, '').trim() : 'Button');
+  const handleClick = (e) => {
+    if (!disabled) {
+      flTrack('cta_click', {
+        cta_label:   ctaLabel,
+        cta_variant: variant,
+        page_path:   (typeof window !== 'undefined' && window.location.hash) || '#/',
+      });
+    }
+    if (onClick) onClick(e);
+  };
+
   if (type === 'submit') {
-    return <button type="submit" disabled={disabled} onClick={onClick} style={s} {...rest}>{children}</button>;
+    return <button type="submit" disabled={disabled} onClick={handleClick} style={s} {...rest}>{children}</button>;
   }
-  return <a href={href || '#/contact'} onClick={onClick} style={s} {...rest}>{children}</a>;
+  return <a href={href || '#/contact'} onClick={handleClick} style={s} {...rest}>{children}</a>;
 }
 
 /* ── Eyebrow label ── */
@@ -637,13 +671,220 @@ function FLFooter() {
       }}>
         <span>© 2026 ForwardLine Consultancy</span>
         {!isMobile && <span>Find and Fix Business Growth Blockers</span>}
-        <span>Privacy · Terms</span>
+        <span>
+          <a
+            href="#"
+            onClick={(e) => { e.preventDefault(); window.dispatchEvent(new Event('fl-open-consent')); }}
+            style={{ color: 'inherit', textDecoration: 'none', letterSpacing: 'inherit' }}
+          >
+            Privacy
+          </a>
+          {' · Terms'}
+        </span>
       </div>
     </footer>
   );
 }
 
+/* ─────────────────────────────────────────────
+   FLConsent — "The Calling Card"
+   A premium cookie-consent notice that slides up from the
+   bottom-right like a placed piece of correspondence. Wired to
+   Google Consent Mode v2: analytics stays cookieless until the
+   visitor accepts. Choice is remembered in localStorage and the
+   card can be re-opened from the footer's "Privacy" link.
+   ───────────────────────────────────────────── */
+const FL_CONSENT_KEY = 'fl-analytics-consent';
+
+function flStoreConsent(value) {            // value: 'granted' | 'denied'
+  try { localStorage.setItem(FL_CONSENT_KEY, value); } catch (e) {}
+  try {
+    if (typeof window.gtag === 'function') {
+      window.gtag('consent', 'update', { analytics_storage: value });
+      if (value === 'granted') {
+        /* Re-send a pageview for the current route now that cookies
+           are allowed, so this visit is counted with full fidelity. */
+        window.gtag('event', 'page_view', {
+          page_location: window.location.href,
+          page_path:     window.location.hash || '#/',
+        });
+      }
+    }
+  } catch (e) {}
+}
+
+/* On/off toggle — navy when on, sand track when off. */
+function FLToggle({ on, onChange, disabled }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={on}
+      disabled={disabled}
+      onClick={() => !disabled && onChange(!on)}
+      style={{
+        width: 40, height: 22, borderRadius: 11, border: 'none',
+        background: on ? FL_NAVY : FL_SAND,
+        position: 'relative', cursor: disabled ? 'default' : 'pointer',
+        opacity: disabled ? 0.6 : 1, transition: 'background .2s ease',
+        flexShrink: 0, padding: 0,
+      }}
+    >
+      <span style={{
+        position: 'absolute', top: 2, left: on ? 20 : 2,
+        width: 18, height: 18, borderRadius: '50%', background: FL_IVORY_2,
+        boxShadow: '0 1px 2px rgba(24,30,48,.3)', transition: 'left .2s ease',
+      }} />
+    </button>
+  );
+}
+
+function FLConsent() {
+  const bp = useBreakpoint();
+  const isMobile = bp === 'sm' || bp === 'xs';
+
+  const [visible, setVisible]   = React.useState(false);
+  const [leaving, setLeaving]   = React.useState(false);   // drives slide-out
+  const [expanded, setExpanded] = React.useState(false);
+  const [analyticsOn, setAnalyticsOn] = React.useState(true);
+
+  const readStored = () => {
+    try { return localStorage.getItem(FL_CONSENT_KEY); } catch (e) { return null; }
+  };
+
+  /* First visit → reveal after a beat (lets the page settle first).
+     Returning visitor with a saved choice → stay hidden. The entrance
+     is a CSS keyframe (below), so it never depends on a JS frame
+     callback landing at the right moment. */
+  React.useEffect(() => {
+    if (!readStored()) {
+      const t = setTimeout(() => setVisible(true), 700);
+      return () => clearTimeout(t);
+    }
+  }, []);
+
+  /* Footer "Privacy" link re-opens the card with current choice loaded. */
+  React.useEffect(() => {
+    const open = () => {
+      setExpanded(true);
+      setAnalyticsOn(readStored() !== 'denied');
+      setLeaving(false);
+      setVisible(true);
+    };
+    window.addEventListener('fl-open-consent', open);
+    return () => window.removeEventListener('fl-open-consent', open);
+  }, []);
+
+  const dismiss = () => {
+    setLeaving(true);
+    setTimeout(() => { setVisible(false); setLeaving(false); setExpanded(false); }, 400);
+  };
+
+  const choose = (value) => { flStoreConsent(value); dismiss(); };
+
+  if (!visible) return null;
+
+  return (
+    <div
+      role="dialog"
+      aria-label="Privacy preferences"
+      style={{
+        position: 'fixed', zIndex: 200,
+        bottom: isMobile ? 16 : 24,
+        right:  isMobile ? 16 : 24,
+        left:   isMobile ? 16 : 'auto',
+        width:  isMobile ? 'auto' : 380,
+        maxWidth: 'calc(100vw - 32px)',
+        background: FL_IVORY_2,
+        border: `1px solid ${FL_SAND}`,
+        boxShadow: '0 2px 6px rgba(24,30,48,.10), 0 18px 50px rgba(24,30,48,.22)',
+        padding: '24px 24px 22px',
+        animation: leaving
+          ? 'flConsentOut .38s cubic-bezier(.4,0,1,1) forwards'
+          : 'flConsentIn .55s cubic-bezier(.22,.61,.36,1) both',
+        fontFamily: FL_BODY, color: FL_NAVY,
+      }}
+    >
+      <style>{`
+        @keyframes flConsentIn  { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes flConsentOut { from { opacity: 1; transform: translateY(0); }    to { opacity: 0; transform: translateY(22px); } }
+      `}</style>
+
+      {/* Eyebrow + diamond divider — the "letterhead" */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 14 }}>
+        <FLEyebrow color={FL_GRAPHITE} style={{ fontSize: 10, letterSpacing: 3.5 }}>A Note on Privacy</FLEyebrow>
+        <FLDivider color={FL_SAND} mark={FL_GOLD} />
+      </div>
+
+      <p style={{ margin: 0, fontSize: 14, lineHeight: 1.65, color: FL_INK }}>
+        We use a quiet bit of analytics to understand how owners find and move through
+        ForwardLine — which pages and tools matter most. Nothing intrusive, and entirely
+        your call.
+      </p>
+
+      {/* Customize panel */}
+      {expanded && (
+        <div style={{ marginTop: 18, paddingTop: 16, borderTop: `1px solid ${FL_LINEN}`, display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+              <span style={{ fontFamily: FL_CAPS, fontSize: 10, letterSpacing: 2.5, textTransform: 'uppercase', color: FL_NAVY }}>Necessary</span>
+              <span style={{ fontSize: 12.5, color: FL_GRAPHITE, lineHeight: 1.5 }}>Required for the site to work.</span>
+            </div>
+            <FLToggle on={true} disabled onChange={() => {}} />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+              <span style={{ fontFamily: FL_CAPS, fontSize: 10, letterSpacing: 2.5, textTransform: 'uppercase', color: FL_NAVY }}>Analytics</span>
+              <span style={{ fontSize: 12.5, color: FL_GRAPHITE, lineHeight: 1.5 }}>Helps us see which pages and tools matter most.</span>
+            </div>
+            <FLToggle on={analyticsOn} onChange={setAnalyticsOn} />
+          </div>
+        </div>
+      )}
+
+      {/* Actions */}
+      <div style={{ marginTop: 20, display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {expanded ? (
+          <FLButton variant="filled" track="Consent · Save Choices"
+            onClick={() => choose(analyticsOn ? 'granted' : 'denied')}
+            style={{ width: '100%', padding: '12px 20px' }}>
+            Save Choices
+          </FLButton>
+        ) : (
+          <div style={{ display: 'flex', gap: 10 }}>
+            <FLButton variant="filled" track="Consent · Accept"
+              onClick={() => choose('granted')}
+              style={{ flex: 1, padding: '12px 20px' }}>
+              Accept
+            </FLButton>
+            <FLButton variant="outline" track="Consent · Necessary Only"
+              onClick={() => choose('denied')}
+              style={{ flex: 1, padding: '12px 20px' }}>
+              Necessary Only
+            </FLButton>
+          </div>
+        )}
+        {!expanded && (
+          <button
+            type="button"
+            onClick={() => setExpanded(true)}
+            style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              fontFamily: FL_CAPS, fontSize: 10, letterSpacing: 2.5, textTransform: 'uppercase',
+              color: FL_GRAPHITE, textDecoration: 'underline', textUnderlineOffset: 3,
+              paddingTop: 2,
+            }}
+          >
+            Customize
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
 Object.assign(window, {
+  flTrack, flTrackTool, FLConsent,
   FL_NAVY, FL_NAVY_2, FL_INK, FL_GRAPHITE, FL_STONE,
   FL_SAND, FL_SAND_2, FL_IVORY, FL_IVORY_2, FL_LINEN, FL_GOLD,
   FL_RAIL_STROKE, FL_STRIP_H,

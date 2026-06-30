@@ -66,6 +66,12 @@ function FLContact() {
       });
       if (res.ok) {
         setStatus('success');
+        /* GA4 recommended conversion event — your primary goal.
+           Mark this as a "Key Event" in the GA dashboard. */
+        flTrack('generate_lead', {
+          role:    stage,
+          quarter: data.get('quarter') || featuredQ,
+        });
         e.target.reset();
       } else {
         setStatus('error');
@@ -155,7 +161,9 @@ function FLContact() {
             {/* Direct lines */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <FLEyebrow>Direct Lines</FLEyebrow>
-              <a href="mailto:forwardlinesa@gmail.com" style={{
+              <a href="mailto:forwardlinesa@gmail.com"
+                onClick={() => flTrack('contact_click', { method: 'email', location: 'contact_page' })}
+                style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14,
                 padding: '18px 22px', border: `1px solid ${FL_NAVY}`, color: FL_NAVY,
                 textDecoration: 'none', fontFamily: FL_CAPS, fontSize: 11, letterSpacing: 3, textTransform: 'uppercase',
@@ -168,7 +176,9 @@ function FLContact() {
                   forwardlinesa@gmail.com
                 </span>
               </a>
-              <a href="tel:+27630977801" style={{
+              <a href="tel:+27630977801"
+                onClick={() => flTrack('contact_click', { method: 'phone', location: 'contact_page' })}
+                style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14,
                 padding: '18px 22px', border: `1px solid ${FL_NAVY}`, color: FL_NAVY,
                 textDecoration: 'none', fontFamily: FL_CAPS, fontSize: 11, letterSpacing: 3, textTransform: 'uppercase',
@@ -182,12 +192,16 @@ function FLContact() {
                 <span style={{ fontFamily: FL_BODY, fontSize: 13, textTransform: 'none', letterSpacing: 0, color: FL_GRAPHITE, fontStyle: 'italic' }}>Mon – Fri · SAST</span>
               </a>
               <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
-                <a href="https://www.linkedin.com/company/forwardline/" target="_blank" rel="noopener" style={{
+                <a href="https://www.linkedin.com/company/forwardline/" target="_blank" rel="noopener"
+                  onClick={() => flTrack('social_click', { network: 'linkedin', location: 'contact_page' })}
+                  style={{
                   flex: 1, padding: '14px 16px', border: `1px solid ${FL_SAND}`, color: FL_NAVY,
                   textDecoration: 'none', fontFamily: FL_CAPS, fontSize: 10, letterSpacing: 2.5, textTransform: 'uppercase',
                   textAlign: 'center', background: FL_IVORY_2,
                 }}>LinkedIn</a>
-                <a href="https://www.facebook.com/ForwardLineSA/" target="_blank" rel="noopener" style={{
+                <a href="https://www.facebook.com/ForwardLineSA/" target="_blank" rel="noopener"
+                  onClick={() => flTrack('social_click', { network: 'facebook', location: 'contact_page' })}
+                  style={{
                   flex: 1, padding: '14px 16px', border: `1px solid ${FL_SAND}`, color: FL_NAVY,
                   textDecoration: 'none', fontFamily: FL_CAPS, fontSize: 10, letterSpacing: 2.5, textTransform: 'uppercase',
                   textAlign: 'center', background: FL_IVORY_2,

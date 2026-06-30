@@ -8,6 +8,36 @@
 <link rel="icon" type="image/svg+xml" href="favicon.svg" />
 <link rel="shortcut icon" href="favicon.svg" />
 
+<!-- ── Google Analytics 4 (GA4) with Consent Mode v2 ──
+     Analytics stays "asleep" (cookieless) until the visitor consents
+     via the Calling Card banner. We only use analytics — ad signals
+     are denied permanently. Pageviews are sent manually per hash route
+     (see App effect below) because this is a single-page app. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PEMC38FMG3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+
+  // Honour any prior choice the visitor already made
+  var FL_PRIOR_CONSENT = 'denied';
+  try {
+    if (localStorage.getItem('fl-analytics-consent') === 'granted') FL_PRIOR_CONSENT = 'granted';
+  } catch (e) {}
+
+  // Consent Mode v2 defaults — ads always denied, analytics gated on choice
+  gtag('consent', 'default', {
+    ad_storage:          'denied',
+    ad_user_data:        'denied',
+    ad_personalization:  'denied',
+    analytics_storage:   FL_PRIOR_CONSENT,
+    wait_for_update:     500
+  });
+
+  gtag('js', new Date());
+  // SPA: suppress the automatic pageview; we fire one per route change.
+  gtag('config', 'G-PEMC38FMG3', { send_page_view: false });
+</script>
+
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
@@ -223,6 +253,23 @@ function App() {
   const route = useRoute();
   const isTools  = route === 'tools' || route.startsWith('tools/');
   const toolSlug = route.startsWith('tools/') ? route.slice('tools/'.length) : null;
+
+  /* GA4 pageview per route. Fires on first mount and every hash change.
+     Individual tool pages register as distinct pageviews (page_path
+     includes the slug), so GA ranks which tool is opened most. Sent
+     through Consent Mode — cookieless until the visitor accepts. */
+  React.useEffect(() => {
+    if (typeof window.gtag === 'function') {
+      const titles = { home: 'Home', wwd: 'What We Do', contact: 'Contact', tools: 'Free Tools' };
+      const label = toolSlug ? 'Tool · ' + toolSlug : (titles[route] || route);
+      window.gtag('event', 'page_view', {
+        page_title:    'ForwardLine — ' + label,
+        page_location: window.location.href,
+        page_path:     window.location.hash || '#/',
+      });
+    }
+  }, [route]);
+
   return (
     <>
       <FLUtilityStrip />
@@ -230,6 +277,7 @@ function App() {
       {route === 'wwd'     && <FLWhatWeDo />}
       {isTools             && <FLTools slug={toolSlug} />}
       {route === 'contact' && <FLContact />}
+      <FLConsent />
     </>
   );
 }
