@@ -12,63 +12,69 @@
    drop straight into FL_TOOLS by slug later.
    ───────────────────────────────────────────── */
 
+/* Roman numerals for the gallery cards — decoupled from the data so the
+   list can be reordered or extended without renumbering by hand. */
+const FL_ROMAN = ['i.','ii.','iii.','iv.','v.','vi.','vii.','viii.','ix.','x.','xi.','xii.'];
+function flRoman(i) { return FL_ROMAN[i] || (i + 1) + '.'; }
+
 /* Single source of truth for the tool gallery.
-   `kind` drives the small corner tag; `slug` is the
-   hash route (#/tools/<slug>). Order here is the
-   order shown in the grid. */
+   `kind` drives the small corner tag; `slug` is the hash route
+   (#/tools/<slug>). When `html` is set, that standalone tool file is
+   embedded (auto-sized iframe) inside the site shell; without it, the
+   card opens the "in the workshop" placeholder. Order here is the order
+   shown in the grid. */
 const FL_TOOLS = [
   {
+    slug: 'are-you-charging-enough',
+    kind: 'Calculator',
+    title: 'Are You Charging Enough?',
+    blurb: 'See how a small price rise drops almost straight to profit — and how many customers you could lose and still come out ahead.',
+    html: 'tools/are-you-charging-enough.html',
+  },
+  {
     slug: 'cac',
-    num: 'i.',
     kind: 'Calculator',
     title: 'Customer Acquisition Cost',
     blurb: 'What it truly costs to win one new customer once every rand of sales and marketing is counted.',
   },
   {
     slug: 'ltv',
-    num: 'ii.',
     kind: 'Calculator',
     title: 'Customer Lifetime Value',
     blurb: 'What a single customer is worth to you across the whole of the relationship — not just the first sale.',
   },
   {
     slug: 'ltv-cac',
-    num: 'iii.',
     kind: 'Calculator',
     title: 'LTV : CAC Ratio',
     blurb: 'The one ratio that tells you whether your growth spend is building the business or quietly draining it.',
   },
   {
     slug: 'customer-value',
-    num: 'iv.',
     kind: 'Calculator',
     title: 'True Value of a Customer',
     blurb: 'Repeat business, margin and referrals folded into a single honest number you can act on.',
   },
   {
     slug: 'break-even',
-    num: 'v.',
     kind: 'Calculator',
     title: 'Break-Even Point',
     blurb: 'The exact revenue you need before a single rand of profit appears — fixed and variable costs accounted for.',
   },
   {
     slug: 'margin',
-    num: 'vi.',
     kind: 'Calculator',
     title: 'Profit Leak Finder',
     blurb: 'Walk the path from top-line revenue to take-home profit and see precisely where the margin escapes.',
   },
   {
     slug: 'bottleneck',
-    num: 'vii.',
     kind: 'Diagnostic',
     title: 'Bottleneck Finder',
     blurb: 'A short, candid diagnostic that surfaces the single constraint holding your growth back right now.',
   },
   {
     slug: 'next-hire',
-    num: 'viii.',
     kind: 'Diagnostic',
     title: 'Next Hire Advisor',
     blurb: 'Where you are capacity-bound, and the one role that will unlock the most room when you fill it next.',
@@ -106,7 +112,7 @@ function FLToolCard({ tool, index, isMobile }) {
         transition: 'width .35s cubic-bezier(.22,.61,.36,1)',
       }} />
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12 }}>
-        <span style={{ fontFamily: FL_DISPLAY, fontStyle: 'italic', fontSize: 22, color: FL_SAND, fontWeight: 500 }}>{tool.num}</span>
+        <span style={{ fontFamily: FL_DISPLAY, fontStyle: 'italic', fontSize: 22, color: FL_SAND, fontWeight: 500 }}>{flRoman(index)}</span>
         <span style={{ fontFamily: FL_CAPS, fontSize: 9, letterSpacing: 2.5, textTransform: 'uppercase', color: FL_GOLD }}>{tool.kind}</span>
       </div>
       <h3 style={{ margin: 0, fontFamily: FL_DISPLAY, fontSize: 23, fontWeight: 600, color: FL_NAVY, lineHeight: 1.15 }}>
@@ -120,7 +126,7 @@ function FLToolCard({ tool, index, isMobile }) {
         color: hover ? FL_NAVY : FL_GRAPHITE, display: 'inline-flex', alignItems: 'center', gap: 8,
         transition: 'color .25s ease',
       }}>
-        Open Tool
+        {tool.html ? 'Open Tool' : 'Coming Soon'}
         <span style={{
           display: 'inline-block',
           transform: hover ? 'translateX(4px)' : 'translateX(0)',
@@ -131,7 +137,61 @@ function FLToolCard({ tool, index, isMobile }) {
   );
 }
 
-/* ── Individual tool view — placeholder while widgets are built ── */
+/* ── Embedded standalone tool ──
+   Each tool file is a complete HTML document, so it loads in an iframe.
+   Same-origin lets us read its height and resize the frame to fit, so
+   there's no nested scrollbar — it reads as one continuous page. A
+   ResizeObserver keeps the height correct as the tool reveals steps. */
+function FLToolFrame({ src, title }) {
+  const ref = React.useRef(null);
+  const [height, setHeight] = React.useState(900);
+
+  React.useEffect(() => {
+    const frame = ref.current;
+    if (!frame) return;
+    let ro = null;
+    const sync = () => {
+      try {
+        const doc = frame.contentDocument;
+        if (doc && doc.body) {
+          const h = Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight);
+          setHeight(h);
+        }
+      } catch (e) { /* cross-origin (shouldn't happen, same site) */ }
+    };
+    const onLoad = () => {
+      sync();
+      try {
+        const doc = frame.contentDocument;
+        if (doc && doc.body && typeof ResizeObserver !== 'undefined') {
+          ro = new ResizeObserver(sync);
+          ro.observe(doc.body);
+        }
+      } catch (e) {}
+    };
+    frame.addEventListener('load', onLoad);
+    window.addEventListener('resize', sync);
+    /* In case it's already loaded from cache before listener attached */
+    sync();
+    return () => {
+      frame.removeEventListener('load', onLoad);
+      window.removeEventListener('resize', sync);
+      if (ro) ro.disconnect();
+    };
+  }, [src]);
+
+  return (
+    <iframe
+      ref={ref}
+      src={src}
+      title={title}
+      scrolling="no"
+      style={{ width: '100%', height, border: 'none', display: 'block', background: FL_IVORY }}
+    />
+  );
+}
+
+/* ── Individual tool view — embeds a ready tool, or a placeholder ── */
 function FLToolWidget({ tool }) {
   const bp = useBreakpoint();
   const isMobile = bp === 'sm' || bp === 'xs';
@@ -153,6 +213,32 @@ function FLToolWidget({ tool }) {
             </p>
             <FLButton href="#/tools" variant="outline">← Back to Free Tools</FLButton>
           </div>
+        </div>
+        <FLFooter />
+      </div>
+    );
+  }
+
+  /* Ready tool → embed its standalone HTML inside the site shell. */
+  if (tool.html) {
+    return (
+      <div style={{ background: FL_IVORY, fontFamily: FL_BODY, color: FL_NAVY, minHeight: sectionMinH, display: 'flex', flexDirection: 'column' }}>
+        <FLNav active="Free Tools" />
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16,
+          padding: isMobile ? '16px 24px' : '16px 40px',
+          borderBottom: `1px solid ${FL_SAND_2}`, background: FL_IVORY, flexWrap: 'wrap',
+        }}>
+          <a href="#/tools" style={{
+            fontFamily: FL_CAPS, fontSize: 10, letterSpacing: 2.5, textTransform: 'uppercase',
+            color: FL_GRAPHITE, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8,
+          }}>
+            <span>←</span> All Free Tools
+          </a>
+          <FLButton href="#/contact" variant="outline" style={{ padding: '10px 20px', fontSize: 10 }}>Book a Call →</FLButton>
+        </div>
+        <div style={{ flex: 1 }}>
+          <FLToolFrame src={tool.html} title={tool.title} />
         </div>
         <FLFooter />
       </div>
