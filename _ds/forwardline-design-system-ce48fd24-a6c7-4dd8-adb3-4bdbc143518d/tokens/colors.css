@@ -1,0 +1,43 @@
+/* ForwardLine — Color tokens
+   Navy is the primary brand color. Gold is reserved for the single primary CTA. */
+:root {
+  /* ---- Base palette ---- */
+  --navy: #181E30;          /* Primary — dark anchor (hero / dark bands) */
+  --cream: #F4EFE3;         /* Main light reading surface */
+  --cream-light: #FAF6EC;   /* Section alternation, lighter surface */
+  --gold: #B8893B;          /* Action / CTA — antique gold, metallic accent */
+  --gold-deep: #9E7430;     /* Gold hover/press (darker) */
+
+  /* Neutrals, light → dark */
+  --neutral-100: #D8CCBB;
+  --neutral-200: #C4B8A3;
+  --neutral-300: #A9A39A;
+  --neutral-500: #6E6A66;   /* Muted text / fine print */
+
+  --ink: #2E2E2E;           /* Body text on light — not pure black */
+
+  /* ---- Semantic aliases ---- */
+  /* Surfaces */
+  --surface-page: var(--cream);
+  --surface-alt: var(--cream-light);
+  --surface-card: #FFFFFF;
+  --surface-dark: var(--navy);
+
+  /* Text */
+  --text-heading: var(--navy);     /* Headings on light */
+  --text-body: var(--ink);         /* Body on light */
+  --text-muted: var(--neutral-500);/* Fine print, captions */
+  --text-on-dark: var(--cream-light);
+  --text-on-dark-muted: var(--neutral-200);
+  --text-on-gold: var(--navy);     /* Navy on gold = 5.3:1 */
+
+  /* Action */
+  --action: var(--gold);
+  --action-hover: var(--gold-deep);
+  --action-text: var(--navy);
+
+  /* Lines & dividers */
+  --border-subtle: rgba(24, 30, 48, 0.12);
+  --border-strong: rgba(24, 30, 48, 0.28);
+  --border-on-dark: rgba(250, 246, 236, 0.16);
+}
