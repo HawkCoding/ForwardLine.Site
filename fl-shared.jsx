@@ -35,8 +35,8 @@ const FL_PROMO_H   = 44;
    landingUrl: PASTE the Growth Audit landing page URL here once it's live.
    ───────────────────────────────────────────── */
 const FL_PROMO = {
-  enabled:    false,
-  landingUrl: 'PASTE-GROWTH-AUDIT-LANDING-PAGE-URL-HERE',
+  enabled:    true,
+  landingUrl: 'https://www.forwardline.co.za/growthcall',
   badge:      'New Service',
   headline:   'Introducing the Growth Audit',
   sub:        'A focused 2-hour session that finds your fastest path to a win.',
