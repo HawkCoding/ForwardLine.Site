@@ -571,8 +571,8 @@ function FLPromoBanner() {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: isMobile ? 6 : 20,
-        padding: isMobile ? '0 10px' : '0 40px',
+        gap: isMobile ? 4 : 20,
+        padding: isMobile ? '0 4px' : '0 40px',
         textDecoration: 'none',
         zIndex: 99,
         borderBottom: `1px solid rgba(24,30,48,.25)`,
@@ -580,20 +580,20 @@ function FLPromoBanner() {
       }}
     >
       <span style={{
-        fontFamily: FL_CAPS, fontSize: isMobile ? 9 : 12, letterSpacing: isMobile ? 0.5 : 2,
+        fontFamily: FL_CAPS, fontSize: isMobile ? 11 : 12, letterSpacing: isMobile ? 0.5 : 2,
         textTransform: 'uppercase', background: FL_NAVY, color: FL_SAND_2,
-        padding: isMobile ? '3px 6px' : '4px 9px', flexShrink: 0, fontWeight: 600,
+        padding: isMobile ? '3px 4px' : '4px 9px', flexShrink: 0, fontWeight: 600,
       }}>
         {FL_PROMO.badge}
       </span>
       <span style={{
-        fontFamily: FL_BODY, fontWeight: 700, fontSize: isMobile ? 12 : 17,
+        fontFamily: FL_BODY, fontWeight: 700, fontSize: isMobile ? 14 : 17,
         whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flexShrink: isMobile ? 0 : 1,
       }}>
         {headlineText}
       </span>
       <span style={{
-        fontFamily: FL_CAPS, fontWeight: 700, fontSize: isMobile ? 11 : 17,
+        fontFamily: FL_CAPS, fontWeight: 700, fontSize: isMobile ? 13 : 17,
         letterSpacing: isMobile ? 0.5 : 1, flexShrink: 0, whiteSpace: 'nowrap',
       }}>
         {priceText}
@@ -604,7 +604,7 @@ function FLPromoBanner() {
         </span>
       )}
       <span style={{
-        fontFamily: FL_CAPS, fontSize: isMobile ? 10 : 13, letterSpacing: isMobile ? 1 : 2,
+        fontFamily: FL_CAPS, fontSize: isMobile ? 12 : 13, letterSpacing: isMobile ? 1 : 2,
         textTransform: 'uppercase', textDecoration: 'underline', textUnderlineOffset: 3,
         flexShrink: 0, fontWeight: 600,
       }}>
