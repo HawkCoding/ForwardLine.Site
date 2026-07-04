@@ -22,8 +22,30 @@ const FL_DISPLAY = "'Cormorant Garamond', 'Times New Roman', serif";
 const FL_CAPS    = "'Cinzel', 'Cormorant Garamond', serif";
 const FL_BODY    = "'Lora', Georgia, serif";
 
-/* Height of the fixed utility strip — must match body padding-top in HTML */
-const FL_STRIP_H = 32;
+/* Height of the fixed utility strip (quarter intake) and the promo banner
+   stacked beneath it. FL_STRIP_H is the live total — App() applies it as
+   body padding-top / scroll-padding-top at runtime, so toggling
+   FL_PROMO.enabled never leaves a stale gap in index.html. */
+const FL_UTILITY_H = 32;
+const FL_PROMO_H   = 44;
+
+/* ─────────────────────────────────────────────
+   Promo banner — single source of truth
+   Set enabled:false to pull the banner from every page instantly.
+   landingUrl: PASTE the Growth Audit landing page URL here once it's live.
+   ───────────────────────────────────────────── */
+const FL_PROMO = {
+  enabled:    false,
+  landingUrl: 'PASTE-GROWTH-AUDIT-LANDING-PAGE-URL-HERE',
+  badge:      'New Service',
+  headline:   'Introducing the Growth Audit',
+  sub:        'A focused 2-hour session that finds your fastest path to a win.',
+  discount:   '95% OFF',
+  urgency:    'Launch pricing — limited spots, ends soon',
+  cta:        'Claim Your Spot',
+};
+
+const FL_STRIP_H = FL_UTILITY_H + (FL_PROMO.enabled ? FL_PROMO_H : 0);
 
 /* ─────────────────────────────────────────────
    Intake / availability — single source of truth
@@ -473,7 +495,7 @@ function FLUtilityStrip() {
       style={{
         position: 'fixed',
         top: 0, left: 0, right: 0,
-        height: FL_STRIP_H,
+        height: FL_UTILITY_H,
         background: FL_NAVY,
         color: FL_SAND_2,
         padding: isMobile ? '0 24px' : '0 40px',
@@ -519,6 +541,78 @@ function FLUtilityStrip() {
         </span>
       )}
     </div>
+  );
+}
+
+/* ── Promo banner ──
+   Stacked directly beneath the utility strip — same fixed-header family,
+   but visually its own segment (gold, bolder) so it reads as an
+   announcement, not routine intake status. Whole bar is a link out to
+   the launch landing page. Rendered from App() on every in-app page;
+   standalone landing pages live outside this SPA so they never see it. */
+function FLPromoBanner() {
+  const bp = useBreakpoint();
+  const isMobile = bp === 'sm' || bp === 'xs';
+  if (!FL_PROMO.enabled) return null;
+
+  return (
+    <a
+      href={FL_PROMO.landingUrl}
+      onClick={() => flTrack('promo_banner_click', { destination: FL_PROMO.landingUrl })}
+      style={{
+        position: 'fixed',
+        top: FL_UTILITY_H, left: 0, right: 0,
+        height: FL_PROMO_H,
+        background: `linear-gradient(90deg, #B6975C 0%, ${FL_GOLD} 100%)`,
+        color: FL_NAVY,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: isMobile ? 10 : 20,
+        padding: isMobile ? '0 16px' : '0 40px',
+        textDecoration: 'none',
+        zIndex: 99,
+        borderBottom: `1px solid rgba(24,30,48,.25)`,
+        overflow: 'hidden',
+      }}
+    >
+      <span style={{
+        fontFamily: FL_CAPS, fontSize: isMobile ? 9 : 10, letterSpacing: 2,
+        textTransform: 'uppercase', background: FL_NAVY, color: FL_SAND_2,
+        padding: '3px 8px', flexShrink: 0, fontWeight: 600,
+      }}>
+        {FL_PROMO.badge}
+      </span>
+      <span style={{
+        fontFamily: FL_BODY, fontWeight: 700, fontSize: isMobile ? 12 : 14,
+        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+      }}>
+        {FL_PROMO.headline}
+      </span>
+      {!isMobile && (
+        <span style={{ fontFamily: FL_BODY, fontSize: 13, opacity: .82, whiteSpace: 'nowrap' }}>
+          {FL_PROMO.sub}
+        </span>
+      )}
+      <span style={{
+        fontFamily: FL_CAPS, fontWeight: 700, fontSize: isMobile ? 13 : 14,
+        letterSpacing: 1, flexShrink: 0,
+      }}>
+        {FL_PROMO.discount}
+      </span>
+      {!isMobile && (
+        <span style={{ fontFamily: FL_BODY, fontSize: 11, fontStyle: 'italic', opacity: .8, whiteSpace: 'nowrap' }}>
+          {FL_PROMO.urgency}
+        </span>
+      )}
+      <span style={{
+        fontFamily: FL_CAPS, fontSize: isMobile ? 10 : 11, letterSpacing: 2,
+        textTransform: 'uppercase', textDecoration: 'underline', textUnderlineOffset: 3,
+        flexShrink: 0, fontWeight: 600,
+      }}>
+        {FL_PROMO.cta} →
+      </span>
+    </a>
   );
 }
 
@@ -887,10 +981,10 @@ Object.assign(window, {
   flTrack, flTrackTool, FLConsent,
   FL_NAVY, FL_NAVY_2, FL_INK, FL_GRAPHITE, FL_STONE,
   FL_SAND, FL_SAND_2, FL_IVORY, FL_IVORY_2, FL_LINEN, FL_GOLD,
-  FL_RAIL_STROKE, FL_STRIP_H,
+  FL_RAIL_STROKE, FL_STRIP_H, FL_UTILITY_H, FL_PROMO_H, FL_PROMO,
   FL_DISPLAY, FL_CAPS, FL_BODY, FL_IMG,
   FL_INTAKE, flIntake, useFLIntake, flSpotsPhrase, flLeftPhrase, flTakenPhrase, flShortPhrase, flStatusLabel, flFillPercent,
   useBreakpoint, useViewportHeight, useSnapTracker, useRevealOnEnter,
   FLLogo, FLDivider, FLButton, FLEyebrow, FLPhoto, FLSection, FLSectionRail,
-  FLUtilityStrip, FLNav, FLFooter,
+  FLUtilityStrip, FLPromoBanner, FLNav, FLFooter,
 });

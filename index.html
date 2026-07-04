@@ -66,8 +66,9 @@
     background: #F4EFE3;
     font-family: 'Lora', Georgia, serif;
     -webkit-font-smoothing: antialiased;
-    /* Reserve room for the fixed utility strip */
-    padding-top: 32px;
+    /* padding-top is applied at runtime from FL_STRIP_H (fl-shared.jsx) —
+       see App() below — so it always matches whether the promo banner
+       is enabled. */
   }
 
   /* Page transition */
@@ -148,7 +149,7 @@
      or when the user is scrolling into the footer. */
   @media (min-width: 1024px) {
     html[data-route="home"] {
-      scroll-padding-top: 32px;
+      scroll-padding-top: var(--fl-strip-h, 32px);
     }
   }
 
@@ -254,6 +255,12 @@ function App() {
   const isTools  = route === 'tools' || route.startsWith('tools/');
   const toolSlug = route.startsWith('tools/') ? route.slice('tools/'.length) : null;
 
+  React.useEffect(() => {
+    const px = window.FL_STRIP_H + 'px';
+    document.body.style.paddingTop = px;
+    document.documentElement.style.setProperty('--fl-strip-h', px);
+  }, []);
+
   /* GA4 pageview per route. Fires on first mount and every hash change.
      Individual tool pages register as distinct pageviews (page_path
      includes the slug), so GA ranks which tool is opened most. Sent
@@ -273,6 +280,7 @@ function App() {
   return (
     <>
       <FLUtilityStrip />
+      <FLPromoBanner />
       {route === 'home'    && <FLHome />}
       {route === 'wwd'     && <FLWhatWeDo />}
       {isTools             && <FLTools slug={toolSlug} />}
