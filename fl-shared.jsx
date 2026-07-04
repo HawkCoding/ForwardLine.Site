@@ -554,6 +554,10 @@ function FLPromoBanner() {
   const isMobile = bp === 'sm' || bp === 'xs';
   if (!FL_PROMO.enabled) return null;
 
+  const headlineText = isMobile ? 'Growth Audit' : FL_PROMO.headline;
+  const priceText     = isMobile ? 'Launch Special' : FL_PROMO.discount;
+  const ctaText       = isMobile ? 'Book' : FL_PROMO.cta;
+
   return (
     <a
       href={FL_PROMO.landingUrl}
@@ -567,34 +571,32 @@ function FLPromoBanner() {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: isMobile ? 10 : 20,
-        padding: isMobile ? '0 16px' : '0 40px',
+        gap: isMobile ? 6 : 20,
+        padding: isMobile ? '0 10px' : '0 40px',
         textDecoration: 'none',
         zIndex: 99,
         borderBottom: `1px solid rgba(24,30,48,.25)`,
         overflow: 'hidden',
       }}
     >
-      {!isMobile && (
-        <span style={{
-          fontFamily: FL_CAPS, fontSize: 12, letterSpacing: 2,
-          textTransform: 'uppercase', background: FL_NAVY, color: FL_SAND_2,
-          padding: '4px 9px', flexShrink: 0, fontWeight: 600,
-        }}>
-          {FL_PROMO.badge}
-        </span>
-      )}
       <span style={{
-        fontFamily: FL_BODY, fontWeight: 700, fontSize: isMobile ? 14 : 17,
-        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+        fontFamily: FL_CAPS, fontSize: isMobile ? 9 : 12, letterSpacing: isMobile ? 0.5 : 2,
+        textTransform: 'uppercase', background: FL_NAVY, color: FL_SAND_2,
+        padding: isMobile ? '3px 6px' : '4px 9px', flexShrink: 0, fontWeight: 600,
       }}>
-        {FL_PROMO.headline}
+        {FL_PROMO.badge}
       </span>
       <span style={{
-        fontFamily: FL_CAPS, fontWeight: 700, fontSize: isMobile ? 16 : 17,
-        letterSpacing: 1, flexShrink: 0,
+        fontFamily: FL_BODY, fontWeight: 700, fontSize: isMobile ? 12 : 17,
+        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flexShrink: isMobile ? 0 : 1,
       }}>
-        {FL_PROMO.discount}
+        {headlineText}
+      </span>
+      <span style={{
+        fontFamily: FL_CAPS, fontWeight: 700, fontSize: isMobile ? 11 : 17,
+        letterSpacing: isMobile ? 0.5 : 1, flexShrink: 0, whiteSpace: 'nowrap',
+      }}>
+        {priceText}
       </span>
       {!isMobile && (
         <span style={{ fontFamily: FL_BODY, fontWeight: 700, fontSize: 13, whiteSpace: 'nowrap' }}>
@@ -602,11 +604,11 @@ function FLPromoBanner() {
         </span>
       )}
       <span style={{
-        fontFamily: FL_CAPS, fontSize: isMobile ? 12 : 13, letterSpacing: 2,
+        fontFamily: FL_CAPS, fontSize: isMobile ? 10 : 13, letterSpacing: isMobile ? 1 : 2,
         textTransform: 'uppercase', textDecoration: 'underline', textUnderlineOffset: 3,
         flexShrink: 0, fontWeight: 600,
       }}>
-        {isMobile ? 'Book' : FL_PROMO.cta} →
+        {ctaText} →
       </span>
     </a>
   );
