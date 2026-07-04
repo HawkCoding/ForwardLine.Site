@@ -1,0 +1,49 @@
+/* ForwardLine — base element styles & helpers.
+   Light enough to opt into; sets the typographic defaults the brand expects. */
+body {
+  margin: 0;
+  background: var(--surface-page);
+  color: var(--text-body);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: var(--weight-body);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  color: var(--text-heading);
+  line-height: var(--leading-heading);
+  letter-spacing: var(--tracking-display);
+  margin: 0 0 0.4em;
+  text-wrap: balance;
+}
+h1 { font-size: var(--text-h1); line-height: var(--leading-display); }
+h2 { font-size: var(--text-h2); }
+h3 { font-size: var(--text-h3); }
+
+p { margin: 0 0 1em; text-wrap: pretty; }
+
+a { color: var(--navy); text-decoration: underline; text-underline-offset: 0.15em; }
+
+/* Eyebrow / small-caps label */
+.fl-eyebrow {
+  font-family: var(--font-eyebrow);
+  font-size: var(--text-eyebrow);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-eyebrow);
+  color: var(--gold);
+}
+
+/* Dark band helper */
+.fl-on-dark {
+  background: var(--surface-dark);
+  color: var(--text-on-dark);
+}
+.fl-on-dark h1, .fl-on-dark h2, .fl-on-dark h3 { color: var(--text-on-dark); }
+
+::selection { background: var(--gold); color: var(--navy); }

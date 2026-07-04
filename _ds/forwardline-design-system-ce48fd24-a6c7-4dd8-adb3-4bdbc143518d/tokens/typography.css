@@ -1,0 +1,40 @@
+/* ForwardLine — Typography tokens
+   Display: Fraunces (500/600). Body: Manrope (400/600). Eyebrow: Cinzel (uppercase, tracked).
+   "Premium but uncommon." */
+:root {
+  /* Families */
+  --font-display: "Fraunces", "Georgia", serif;
+  --font-body: "Manrope", system-ui, -apple-system, sans-serif;
+  --font-eyebrow: "Cinzel", "Times New Roman", serif;
+
+  /* Weights */
+  --weight-display: 500;
+  --weight-display-bold: 600;
+  --weight-body: 400;
+  --weight-body-bold: 600;
+
+  /* Display scale (Fraunces) */
+  --text-hero: clamp(2.75rem, 5vw, 4.5rem);   /* 44 → 72 */
+  --text-h1: clamp(2.25rem, 4vw, 3.25rem);    /* 36 → 52 */
+  --text-h2: clamp(1.75rem, 3vw, 2.5rem);     /* 28 → 40 */
+  --text-h3: 1.5rem;                          /* 24 */
+
+  /* Body scale (Manrope) */
+  --text-lead: 1.25rem;     /* 20 — sub-heads / lead paragraphs */
+  --text-base: 1.0625rem;   /* 17 — body */
+  --text-sm: 0.9375rem;     /* 15 — secondary */
+  --text-xs: 0.8125rem;     /* 13 — fine print */
+
+  /* Eyebrow (Cinzel) */
+  --text-eyebrow: 0.8125rem; /* 13, uppercase */
+
+  /* Line heights */
+  --leading-display: 1.05;
+  --leading-heading: 1.15;
+  --leading-body: 1.6;
+
+  /* Tracking */
+  --tracking-eyebrow: 0.18em;
+  --tracking-display: -0.01em;
+  --tracking-tight: -0.02em;
+}
