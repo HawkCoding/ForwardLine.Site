@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ForwardLine — Business Consultancy</title>
-<meta name="description" content="Quarterly business consultancy for South African owners and general managers ready to move past the ceiling they built." />
+<title>ForwardLine — Growth Consultancy</title>
+<meta name="description" content="Growth consultancy for South African owners and general managers ready to move past the ceiling they built. Start with a two-hour Growth Audit." />
 <link rel="icon" type="image/svg+xml" href="favicon.svg" />
 <link rel="shortcut icon" href="favicon.svg" />
 
@@ -200,14 +200,16 @@
 <div id="app"></div>
 
 <!-- Eased snap-scroller (vanilla, no React dep) -->
-<script src="fl-snap.js"></script>
+<script src="fl-snap.js?v=5"></script>
 
-<!-- Component scripts — order matters: shared must load first -->
-<script type="text/babel" src="fl-shared.jsx"></script>
-<script type="text/babel" src="fl-home.jsx"></script>
-<script type="text/babel" src="fl-wwd.jsx"></script>
-<script type="text/babel" src="fl-tools.jsx"></script>
-<script type="text/babel" src="fl-contact.jsx"></script>
+<!-- Component scripts — order matters: shared must load first.
+     ?v= is a cache-buster: bump it after editing a .jsx so browsers
+     fetch fresh source instead of a stale disk-cached copy. -->
+<script type="text/babel" src="fl-shared.jsx?v=5"></script>
+<script type="text/babel" src="fl-home.jsx?v=5"></script>
+<script type="text/babel" src="fl-wwd.jsx?v=5"></script>
+<script type="text/babel" src="fl-tools.jsx?v=5"></script>
+<script type="text/babel" src="fl-contact.jsx?v=5"></script>
 
 <script type="text/babel">
 /* ─────────────────────────────────────────────
@@ -279,7 +281,8 @@ function App() {
 
   return (
     <>
-      <FLUtilityStrip />
+      {/* Utility strip hidden for now — promo banner is the sole fixed top bar.
+          Re-add <FLUtilityStrip /> here to bring back the quarter-intake strip. */}
       <FLPromoBanner />
       {route === 'home'    && <FLHome />}
       {route === 'wwd'     && <FLWhatWeDo />}

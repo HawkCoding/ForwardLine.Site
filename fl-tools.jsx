@@ -285,11 +285,11 @@ function FLToolWidget({ tool }) {
                 <span style={{ fontFamily: FL_CAPS, fontSize: 10, letterSpacing: 3, textTransform: 'uppercase', color: FL_GOLD }}>In the workshop</span>
               </div>
               <p style={{ margin: 0, fontSize: 14, color: FL_GRAPHITE, lineHeight: 1.8, maxWidth: 560 }}>
-                We're finishing this one off. It'll open right here — free to use, the same instrument we run inside a quarter. In the meantime, the rest of the toolkit is ready, and a discovery call walks you through the lot against your own numbers.
+                We're finishing this one off. It'll open right here — free to use, the same instrument we run inside a quarter. In the meantime, the rest of the toolkit is ready, and a growth audit walks you through the lot against your own numbers.
               </p>
 
               <div style={{ display: 'flex', gap: 14, marginTop: 12, flexWrap: 'wrap' }}>
-                <FLButton href="#/contact" variant="filled">Book a Discovery Call →</FLButton>
+                <FLButton href="#/contact" variant="filled">Book Your Growth Audit →</FLButton>
                 <FLButton href="#/tools" variant="outline">Browse the Toolkit</FLButton>
               </div>
             </div>
@@ -395,39 +395,6 @@ function FLTools({ slug = null }) {
             {FL_TOOLS.map((tool, i) => (
               <FLToolCard key={tool.slug} tool={tool} index={i} isMobile={isMobile} />
             ))}
-          </div>
-        </div>
-      </FLSection>
-
-      {/* ── 3. Closing CTA ── */}
-      <FLSection
-        id="fl-tools-cta"
-        style={{
-          minHeight: sectionMinH,
-          background: FL_IVORY,
-          display: 'flex', alignItems: 'center',
-          padding: isMobile ? '60px 24px' : '60px 40px',
-        }}
-      >
-        <div className="fl-reveal fl-r1" style={{
-          maxWidth: 1100, margin: '0 auto', width: '100%',
-          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          gap: 36, padding: isMobile ? '32px 24px' : '44px 56px',
-          border: `1px solid ${FL_SAND}`, background: FL_IVORY_2,
-          flexDirection: isMobile ? 'column' : 'row',
-        }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 580 }}>
-            <FLEyebrow>The Tools Are A Taste</FLEyebrow>
-            <h3 style={{ margin: 0, fontFamily: FL_DISPLAY, fontSize: isMobile ? 26 : 34, fontWeight: 500, color: FL_NAVY, lineHeight: 1.15, letterSpacing: -0.3 }}>
-              A calculator gives you a number.<br />
-              <span style={{ fontStyle: 'italic', color: FL_GRAPHITE }}>A quarter gives you the plan to move it.</span>
-            </h3>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: isMobile ? 'flex-start' : 'flex-end' }}>
-            <FLButton href="#/contact" variant="filled">Book a Discovery Call →</FLButton>
-            <span style={{ fontFamily: FL_DISPLAY, fontStyle: 'italic', fontSize: 14, color: FL_GRAPHITE, maxWidth: 320, textAlign: isMobile ? 'left' : 'right' }}>
-              We'll run these against your real numbers, together.
-            </span>
           </div>
         </div>
       </FLSection>

@@ -101,7 +101,7 @@ function FLContact() {
             lineHeight: 1.08, fontWeight: 500, color: FL_IVORY_2, letterSpacing: -0.5, maxWidth: 880,
           }}>
             The first conversation costs nothing.<br />
-            <span style={{ fontStyle: 'italic', color: FL_SAND_2 }}>The missed quarter might.</span>
+            <span style={{ fontStyle: 'italic', color: FL_SAND_2 }}>The missed opportunity might.</span>
           </h1>
           <FLDivider color="rgba(244,239,227,.3)" mark={FL_SAND_2} width="120px" />
         </div>
@@ -116,48 +116,8 @@ function FLContact() {
           gap: isMobile ? 56 : 80, alignItems: 'start',
         }}>
 
-          {/* LEFT — scarcity panel */}
+          {/* LEFT — direct lines */}
           <aside style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <FLEyebrow>Current Availability</FLEyebrow>
-              <h2 style={{ margin: 0, fontFamily: FL_DISPLAY, fontSize: isMobile ? 36 : 48, fontWeight: 500, color: FL_NAVY, lineHeight: 1.05, letterSpacing: -0.4 }}>
-                {featuredQ}<br />
-                <span style={{ fontStyle: 'italic', color: FL_GRAPHITE, fontSize: isMobile ? 26 : 36 }}>{featuredMonths}</span>
-              </h2>
-            </div>
-
-            <div style={{ padding: '32px', border: `1px solid ${FL_SAND}`, background: FL_IVORY_2, display: 'flex', flexDirection: 'column', gap: 20 }}>
-              <div style={{ padding: '10px 16px', background: FL_NAVY, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontFamily: FL_CAPS, fontSize: 9, letterSpacing: 3, textTransform: 'uppercase', color: 'rgba(244,239,227,.6)' }}>{intake.currentQuarter} · {intake.currentQuarterMonths}</span>
-                <span style={{ fontFamily: FL_CAPS, fontSize: 9, letterSpacing: 3, textTransform: 'uppercase', color: FL_SAND_2 }}>{flTakenPhrase(intake.currentBooked, intake.currentTotal)}</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                <FLEyebrow color={FL_NAVY}>{featuredQ} · Intake</FLEyebrow>
-                <span style={{ fontFamily: FL_DISPLAY, fontSize: 16, color: FL_GRAPHITE, fontStyle: 'italic' }}>{flLeftPhrase(featuredBooked, featuredTotal).toLowerCase()}</span>
-              </div>
-              <div style={{ display: 'flex', gap: 8 }}>
-                {Array.from({ length: featuredTotal }, (_, idx) => idx + 1).map(i => {
-                  const taken = i <= featuredBooked;
-                  return (
-                    <div key={i} style={{
-                      flex: 1, height: 44, border: `1px solid ${FL_SAND}`,
-                      background: taken ? FL_NAVY : 'transparent',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative',
-                    }}>
-                      <span style={{ fontFamily: FL_CAPS, fontSize: 9, letterSpacing: 2, color: taken ? 'rgba(244,239,227,.5)' : FL_GRAPHITE }}>0{i}</span>
-                    </div>
-                  );
-                })}
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: FL_CAPS, fontSize: 9, letterSpacing: 2.5, textTransform: 'uppercase', color: FL_GRAPHITE }}>
-                <span>
-                  <span style={{ display: 'inline-block', width: 8, height: 8, background: FL_NAVY, marginRight: 6, transform: 'translateY(1px)' }} />
-                  Reserved
-                </span>
-                <span>Applications close when full</span>
-              </div>
-            </div>
-
             {/* Direct lines */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <FLEyebrow>Direct Lines</FLEyebrow>
@@ -191,14 +151,23 @@ function FLContact() {
                 </span>
                 <span style={{ fontFamily: FL_BODY, fontSize: 13, textTransform: 'none', letterSpacing: 0, color: FL_GRAPHITE, fontStyle: 'italic' }}>Mon – Fri · SAST</span>
               </a>
+              <a href="https://wa.me/27630977801"
+                target="_blank" rel="noopener"
+                onClick={() => flTrack('contact_click', { method: 'whatsapp', location: 'contact_page' })}
+                style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14,
+                padding: '18px 22px', border: `1px solid ${FL_NAVY}`, color: FL_NAVY,
+                textDecoration: 'none', fontFamily: FL_CAPS, fontSize: 11, letterSpacing: 3, textTransform: 'uppercase',
+              }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.97L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 1.8c2.16 0 4.19.84 5.72 2.37a8.04 8.04 0 0 1 2.37 5.72c0 4.46-3.63 8.09-8.1 8.09a8.1 8.1 0 0 1-4.13-1.13l-.3-.18-3.11.82.83-3.04-.19-.31a8.06 8.06 0 0 1-1.24-4.29c0-4.47 3.63-8.1 8.1-8.1Zm-2.4 4.03c-.15 0-.4.06-.6.28-.2.22-.79.77-.79 1.87 0 1.1.81 2.17.92 2.32.11.15 1.57 2.4 3.86 3.36.54.23.96.37 1.29.48.54.17 1.03.15 1.42.09.43-.06 1.33-.54 1.52-1.07.19-.53.19-.98.13-1.07-.06-.09-.2-.15-.43-.26-.22-.11-1.33-.66-1.53-.73-.2-.08-.36-.11-.51.11-.15.22-.58.73-.71.88-.13.15-.26.17-.48.06-.22-.11-.94-.35-1.79-1.11-.66-.59-1.11-1.32-1.24-1.54-.13-.22-.01-.34.1-.45.1-.1.22-.26.33-.39.11-.13.15-.22.22-.37.07-.15.04-.28-.02-.39-.06-.11-.51-1.23-.7-1.68-.18-.44-.37-.38-.51-.39l-.44-.01Z"/>
+                  </svg>
+                  063 097 7801
+                </span>
+                <span style={{ fontFamily: FL_BODY, fontSize: 13, textTransform: 'none', letterSpacing: 0, color: FL_GRAPHITE, fontStyle: 'italic' }}>WhatsApp</span>
+              </a>
               <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
-                <a href="https://www.linkedin.com/company/forwardline/" target="_blank" rel="noopener"
-                  onClick={() => flTrack('social_click', { network: 'linkedin', location: 'contact_page' })}
-                  style={{
-                  flex: 1, padding: '14px 16px', border: `1px solid ${FL_SAND}`, color: FL_NAVY,
-                  textDecoration: 'none', fontFamily: FL_CAPS, fontSize: 10, letterSpacing: 2.5, textTransform: 'uppercase',
-                  textAlign: 'center', background: FL_IVORY_2,
-                }}>LinkedIn</a>
                 <a href="https://www.facebook.com/ForwardLineSA/" target="_blank" rel="noopener"
                   onClick={() => flTrack('social_click', { network: 'facebook', location: 'contact_page' })}
                   style={{
@@ -230,21 +199,20 @@ function FLContact() {
             ) : (
               <form onSubmit={handleSubmit}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
-                  <FLEyebrow>Apply for a Discovery Call</FLEyebrow>
-                  <span style={{ fontFamily: FL_CAPS, fontSize: 9, letterSpacing: 2.5, textTransform: 'uppercase', color: FL_STONE }}>Step 1 of 1 · 2 minutes</span>
+                  <FLEyebrow>Apply for a Growth Audit</FLEyebrow>
                 </div>
                 <h2 style={{ margin: '14px 0 8px', fontFamily: FL_DISPLAY, fontSize: isMobile ? 28 : 38, fontWeight: 500, color: FL_NAVY, lineHeight: 1.1, letterSpacing: -0.3 }}>
                   Tell us a little about your business.
                 </h2>
                 <p style={{ margin: '0 0 32px', fontSize: 14, color: FL_GRAPHITE, lineHeight: 1.75, fontFamily: FL_BODY, maxWidth: 520 }}>
-                  Tell us where the business is and where it is stuck. We will come back to you within one business day to schedule the discovery call.
+                  Tell us where the business is and where it is stuck. We will come back to you within one business day to schedule the growth audit.
                 </p>
 
                 <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 22 }}>
                   <FLField label="Full Name"  name="name"    placeholder="e.g. Helena Marsh"      required />
                   <FLField label="Company"    name="company" placeholder="e.g. Marsh & Co." />
                   <FLField label="Email"      name="email"   type="email" placeholder="helena@example.com" required />
-                  <FLField label="Phone"      name="phone"   hint="optional" type="tel" placeholder="+27…" />
+                  <FLField label="Phone"      name="phone"   type="tel" placeholder="+27…" required />
                 </div>
 
                 <div style={{ marginTop: 22, display: 'flex', flexDirection: 'column', gap: 22 }}>
@@ -273,13 +241,6 @@ function FLContact() {
                     textarea height={140}
                     placeholder="Margins are tightening, the leadership team feels stretched, and we cannot tell whether it is a strategy problem or an operations problem…"
                     required
-                  />
-
-                  <FLField
-                    label="Quarter you're applying for"
-                    hint="we will confirm availability"
-                    name="quarter"
-                    placeholder={`${featuredQ} — preferred`}
                   />
                 </div>
 
@@ -311,7 +272,7 @@ function FLContact() {
           gap: 16, fontFamily: FL_CAPS, fontSize: 10, letterSpacing: 3, textTransform: 'uppercase', color: FL_GRAPHITE,
           flexWrap: 'wrap',
         }}>
-          {['◆ One business day reply', 'Direct line to the team', 'No-obligation discovery call', 'Confidential by default'].map(t => (
+          {['◆ One business day reply', 'Direct line to the team', 'No-obligation growth audit', 'Confidential by default'].map(t => (
             <span key={t}>{t}</span>
           ))}
         </div>

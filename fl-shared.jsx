@@ -44,7 +44,11 @@ const FL_PROMO = {
   cta:        'Book Now',
 };
 
-const FL_STRIP_H = FL_UTILITY_H + (FL_PROMO.enabled ? FL_PROMO_H : 0);
+/* Utility strip is currently hidden (App() no longer renders FLUtilityStrip),
+   so the promo banner is the sole fixed top bar. FL_STRIP_H — the runtime
+   body padding-top / scroll-padding-top / snap reference — is therefore just
+   the banner height. Restore `FL_UTILITY_H +` here if the strip comes back. */
+const FL_STRIP_H = (FL_PROMO.enabled ? FL_PROMO_H : 0);
 
 /* ─────────────────────────────────────────────
    Intake / availability — single source of truth
@@ -457,7 +461,7 @@ function FLButton({ children, variant = 'filled', href, onClick, style: extra = 
 /* ── Eyebrow label ── */
 function FLEyebrow({ children, color = FL_GRAPHITE, style: extra = {} }) {
   return (
-    <span style={{ fontFamily: FL_CAPS, fontSize:11, letterSpacing:4, textTransform:'uppercase', color, fontWeight:500, ...extra }}>
+    <span style={{ fontFamily: FL_CAPS, fontSize:15, letterSpacing:4, textTransform:'uppercase', color, fontWeight:500, ...extra }}>
       {children}
     </span>
   );
@@ -564,7 +568,7 @@ function FLPromoBanner() {
       onClick={() => flTrack('promo_banner_click', { destination: FL_PROMO.landingUrl })}
       style={{
         position: 'fixed',
-        top: FL_UTILITY_H, left: 0, right: 0,
+        top: 0, left: 0, right: 0,
         height: FL_PROMO_H,
         background: `linear-gradient(90deg, #B6975C 0%, ${FL_GOLD} 100%)`,
         color: FL_NAVY,
@@ -738,7 +742,7 @@ function FLFooter() {
         {[
           { title:'Navigate',   items:[['Home','#/',null],['What We Do','#/wwd',null],['Free Tools','#/tools',null],['Contact','#/contact',null]] },
           { title:'Engagement', items:[['The Quarter','#/wwd',null],['Process','#/wwd','fl-wwd-process'],["What's Included",'#/wwd','fl-wwd-included']] },
-          { title:'Reach Us',   items:[['forwardlinesa@gmail.com','mailto:forwardlinesa@gmail.com',null],['LinkedIn','https://www.linkedin.com/company/forwardline/',null],['Facebook','https://www.facebook.com/ForwardLineSA/',null]] },
+          { title:'Reach Us',   items:[['forwardlinesa@gmail.com','mailto:forwardlinesa@gmail.com',null],['Facebook','https://www.facebook.com/ForwardLineSA/',null]] },
         ].map(col => (
           <div key={col.title} style={{ display:'flex', flexDirection:'column', gap:10 }}>
             <FLEyebrow color={FL_SAND_2} style={{ fontSize:10, letterSpacing:3.5 }}>{col.title}</FLEyebrow>
