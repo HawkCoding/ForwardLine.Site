@@ -6,6 +6,37 @@ function ccGoToBook() {
 }
 window.ccGoToBook = ccGoToBook;
 
+/* Gold brush-stroke strike-through, for slashing out the old price. */
+function BrushStrike({ children, style }) {
+  return (
+    <span style={{ position: "relative", display: "inline-block", color: "var(--text-muted)", ...style }}>
+      {children}
+      <svg viewBox="0 0 120 34" preserveAspectRatio="none" style={{
+        position: "absolute", left: "-4%", top: "6%", width: "108%", height: "88%",
+        transform: "rotate(-3deg)", pointerEvents: "none",
+      }}>
+        <path d="M3,19 C22,9 38,27 58,15 C79,4 98,25 117,13"
+          stroke="var(--gold)" strokeWidth="7" strokeLinecap="round" fill="none" opacity="0.92" />
+        <circle cx="9" cy="25" r="1.6" fill="var(--gold)" opacity="0.7" />
+        <circle cx="108" cy="8" r="1.3" fill="var(--gold)" opacity="0.6" />
+        <circle cx="118" cy="19" r="1" fill="var(--gold)" opacity="0.5" />
+      </svg>
+    </span>
+  );
+}
+
+function SaveBadge({ children }) {
+  return (
+    <span style={{
+      position: "absolute", top: "-0.8rem", right: "-1.6rem",
+      background: "var(--gold)", color: "var(--navy)", fontFamily: "var(--font-body)",
+      fontWeight: 700, fontSize: "0.7rem", letterSpacing: "0.03em",
+      padding: "0.2rem 0.55rem", borderRadius: "999px", transform: "rotate(6deg)",
+      boxShadow: "var(--shadow-raised)", whiteSpace: "nowrap",
+    }}>{children}</span>
+  );
+}
+
 function CCHeader() {
   const { Button } = window.ForwardLineDesignSystem_ce48fd;
   return (
@@ -16,11 +47,11 @@ function CCHeader() {
     }}>
       <div style={{
         maxWidth: "var(--container-max)", margin: "0 auto",
-        padding: "0.9rem var(--gutter)",
+        padding: "0.5rem var(--gutter)",
         display: "flex", alignItems: "center", justifyContent: "space-between", gap: "2rem",
       }}>
         <a href="#top" style={{ display: "flex", alignItems: "center" }}>
-          <img src="./assets/ForwardLine-Logo-Cream.svg" alt="ForwardLine" style={{ height: 36 }} />
+          <img src="./assets/ForwardLine-Logo-Cream.svg" alt="ForwardLine" style={{ height: "clamp(2.75rem, 6vw, 4rem)" }} />
         </a>
         <Button variant="primary" size="sm" onClick={ccGoToBook}>Book the call</Button>
       </div>
@@ -40,7 +71,9 @@ function CCHero() {
         display: "grid", gridTemplateColumns: "1.05fr 0.95fr", gap: "clamp(2rem,5vw,5rem)", alignItems: "center",
       }}>
         <div>
-          <Eyebrow color="var(--gold)">The Constraint Call</Eyebrow>
+          <Eyebrow color="var(--gold)" style={{ fontSize: "clamp(1.5rem, 3.2vw, 2.25rem)", letterSpacing: "0.08em" }}>
+            The Growth Audit
+          </Eyebrow>
           <h1 style={{
             color: "var(--text-on-dark)", fontSize: "var(--text-hero)",
             lineHeight: "var(--leading-display)", margin: "1rem 0 1.2rem",
@@ -51,14 +84,11 @@ function CCHero() {
             fontSize: "var(--text-lead)", color: "var(--neutral-200)",
             maxWidth: "48ch", margin: "0 0 2rem",
           }}>
-            We ask the hard questions. You ask yours. Together we find the single point your
-            business is most constrained — and the fix that unlocks growth.
+            We ask the questions you don't think to ask. Together, we find what's holding your
+            business back — and the plan that unlocks its growth potential.
           </p>
           <div style={{ display: "flex", gap: "1rem", alignItems: "center", flexWrap: "wrap" }}>
             <Button variant="primary" size="lg" onClick={ccGoToBook}>Book the call</Button>
-            <span style={{ fontSize: "var(--text-sm)", color: "var(--neutral-300)" }}>
-              2 hours &middot; one focus &middot; a clear next move
-            </span>
           </div>
         </div>
         <CCSessionCard />
@@ -69,9 +99,9 @@ function CCHero() {
 
 function CCSessionCard() {
   const rows = [
-    ["00:00", "We map your business", "Where the work comes from, and where it leaks out."],
-    ["00:40", "We find the constraint", "The one bottleneck capping your growth — not ten, one."],
-    ["01:30", "You leave with the fix", "The exact move to make next, and how to make it."],
+    ["We learn your business", "We need to know the systems that make your business work."],
+    ["We find what's holding you back", "This is the clear area where you're lacking the most — and where we'll focus."],
+    ["You leave with the fix", "A plan with a few options — the exact move to make next, and how to make it."],
   ];
   return (
     <div style={{
@@ -85,12 +115,11 @@ function CCSessionCard() {
         </div>
       </div>
       <div style={{ display: "grid", gap: "1.1rem" }}>
-        {rows.map(([t, h, b]) => (
-          <div key={t} style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "1rem", alignItems: "start" }}>
+        {rows.map(([h, b]) => (
+          <div key={h} style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "1rem", alignItems: "start" }}>
             <span style={{
-              fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "0.8125rem",
-              color: "var(--gold)", paddingTop: "0.15rem", minWidth: "3.2rem",
-            }}>{t}</span>
+              color: "var(--gold)", fontSize: "1rem", paddingTop: "0.2rem", minWidth: "1rem",
+            }}>&#9670;</span>
             <div>
               <div style={{ fontWeight: 600, fontSize: "1rem", color: "var(--navy)" }}>{h}</div>
               <div style={{ fontSize: "0.875rem", color: "var(--text-muted)", marginTop: "0.15rem" }}>{b}</div>
@@ -100,11 +129,11 @@ function CCSessionCard() {
       </div>
       <div style={{
         borderTop: "1px solid var(--border-subtle)", marginTop: "1.4rem", paddingTop: "1.2rem",
-        display: "flex", alignItems: "baseline", justifyContent: "space-between",
+        display: "flex", alignItems: "baseline", gap: "0.9rem",
       }}>
-        <span style={{ fontSize: "0.875rem", color: "var(--text-muted)" }}>Fixed price</span>
-        <span style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: "1.6rem", color: "var(--navy)" }}>
-          R10,000
+        <BrushStrike style={{ fontSize: "1.1rem" }}>R10,000</BrushStrike>
+        <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1.8rem", color: "var(--gold)" }}>
+          R500
         </span>
       </div>
     </div>
@@ -116,16 +145,16 @@ window.CCHero = CCHero;
 function CCWhy() {
   const { Eyebrow } = window.ForwardLineDesignSystem_ce48fd;
   const points = [
-    ["You don't have ten problems.", "You have one that's capping the rest. We find it, so you stop spending money fixing the wrong things."],
-    ["No slides. No homework.", "Two hours, a real conversation, straight answers. You walk away knowing the next move."],
-    ["Worth more than it costs.", "One unlocked constraint pays for the call many times over. If it doesn't, you'll know that in two hours too."],
+    ["Stop working on the wrong problem.", "Spend your time and money on the one thing that will give you the most return."],
+    ["A conversation, not a presentation.", "You know your business best. We ask the questions and listen — then compare it to what works elsewhere, so we can see what's missing from your recipe for success."],
+    ["Worth more than it costs.", "One fixed problem pays for the call many times over. If it doesn't, you'll know that in two hours too."],
   ];
   return (
     <section style={{ background: "var(--cream-light)", borderTop: "1px solid var(--border-subtle)", borderBottom: "1px solid var(--border-subtle)" }}>
       <div style={{ maxWidth: "var(--container-max)", margin: "0 auto", padding: "var(--section-y) var(--gutter)" }}>
-        <Eyebrow>Why it works</Eyebrow>
+        <Eyebrow style={{ fontSize: "clamp(1.25rem, 2.6vw, 1.75rem)", letterSpacing: "0.08em" }}>Why it works</Eyebrow>
         <h2 style={{ marginTop: "0.8rem", maxWidth: "22ch", marginBottom: "var(--space-7)" }}>
-          Find the constraint. Fix the constraint. Grow.
+          Find what's holding you back. Fix it. Grow.
         </h2>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "var(--space-6)" }}>
           {points.map(([t, b]) => (
@@ -142,10 +171,65 @@ function CCWhy() {
 window.CCWhy = CCWhy;
 
 
+const CC_CONFETTI = [
+  { x: "8%", y: "9%", size: 15, r: -15, o: 0.9 },
+  { x: "86%", y: "13%", size: 11, r: 20, o: 0.7 },
+  { x: "92%", y: "54%", size: 17, r: 8, o: 0.8 },
+  { x: "5%", y: "58%", size: 12, r: 30, o: 0.6 },
+  { x: "15%", y: "87%", size: 10, r: -10, o: 0.7 },
+  { x: "80%", y: "90%", size: 14, r: 15, o: 0.85 },
+  { x: "48%", y: "5%", size: 9, r: 0, o: 0.6 },
+  { x: "35%", y: "93%", size: 11, r: -20, o: 0.75 },
+];
+
+function CCCelebrateModal({ onClose }) {
+  const { Button } = window.ForwardLineDesignSystem_ce48fd;
+  return ReactDOM.createPortal(
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed", inset: 0, zIndex: 100,
+        background: "rgba(24,30,48,0.72)", backdropFilter: "blur(4px)",
+        display: "flex", alignItems: "center", justifyContent: "center", padding: "1.5rem",
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          position: "relative", overflow: "hidden", background: "#fff", color: "var(--ink)",
+          borderRadius: "var(--radius-sm)", boxShadow: "var(--shadow-raised)",
+          padding: "clamp(2.2rem, 5vw, 3.5rem)", maxWidth: "460px", width: "100%",
+          textAlign: "center",
+        }}
+      >
+        {CC_CONFETTI.map((c, i) => (
+          <span key={i} style={{
+            position: "absolute", left: c.x, top: c.y, color: "var(--gold)",
+            fontSize: c.size, transform: `rotate(${c.r}deg)`, opacity: c.o, pointerEvents: "none",
+          }}>&#9670;</span>
+        ))}
+        <div style={{
+          position: "relative", fontFamily: "var(--font-display)", fontWeight: 700,
+          fontSize: "clamp(2rem, 4vw, 2.6rem)", color: "var(--navy)",
+        }}>
+          Well done.
+        </div>
+        <p style={{ position: "relative", color: "var(--text-muted)", fontSize: "var(--text-lead)", margin: "1rem 0 1.8rem" }}>
+          That's the hard part done. You just moved your business one step closer to growing —
+          and being more profitable. We'll be in touch soon to lock in your time.
+        </p>
+        <Button variant="primary" size="lg" onClick={onClose} style={{ position: "relative" }}>Got it</Button>
+      </div>
+    </div>,
+    document.body
+  );
+}
+
 function CCBook() {
   const { Eyebrow, Input, Button } = window.ForwardLineDesignSystem_ce48fd;
   const [sent, setSent] = React.useState(false);
   const [busy, setBusy] = React.useState(false);
+  const [celebrate, setCelebrate] = React.useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
     setBusy(true);
@@ -160,6 +244,7 @@ function CCBook() {
     } catch (err) { /* still confirm — we have the details */ }
     setBusy(false);
     setSent(true);
+    setCelebrate(true);
   };
   return (
     <section id="book" style={{ background: "var(--navy)", color: "var(--text-on-dark)" }}>
@@ -168,12 +253,29 @@ function CCBook() {
         display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(2rem,5vw,5rem)", alignItems: "center",
       }}>
         <div>
-          <Eyebrow color="var(--gold)">Book the call</Eyebrow>
+          <Eyebrow color="var(--gold)" style={{ fontSize: "clamp(1.5rem, 3.2vw, 2.25rem)", letterSpacing: "0.08em" }}>
+            Book the call
+          </Eyebrow>
           <h2 style={{ color: "var(--text-on-dark)", marginTop: "0.8rem" }}>
-            Two hours. One constraint. R10,000.
+            Two hours. One plan to reach your growth goal.
           </h2>
           <p style={{ color: "var(--neutral-200)", maxWidth: "44ch", fontSize: "var(--text-lead)" }}>
-            Leave your details. We'll confirm a time, send the invoice, and come ready to dig in.
+            Leave your details. We'll confirm a time, send the invoice — and it's time for your business to grow.
+          </p>
+          <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "1.4rem", margin: "1.6rem 0" }}>
+            <span style={{ position: "relative", display: "inline-flex", alignItems: "baseline", gap: "0.9rem" }}>
+              <BrushStrike style={{ fontSize: "1.2rem", color: "var(--neutral-300)" }}>R10,000</BrushStrike>
+              <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "2.25rem", color: "var(--gold)" }}>
+                R500
+              </span>
+              <SaveBadge>Save 95%</SaveBadge>
+            </span>
+            <span style={{ fontSize: "var(--text-sm)", color: "var(--neutral-300)", maxWidth: "22ch" }}>
+              Pay once. Keep the growth going forward.
+            </span>
+          </div>
+          <p style={{ color: "var(--neutral-300)", fontSize: "var(--text-sm)", margin: 0 }}>
+            You're one booking away from your business's growth.
           </p>
         </div>
         <div style={{
@@ -192,7 +294,7 @@ function CCBook() {
           ) : (
             <form onSubmit={handleSubmit} style={{ display: "grid", gap: "1.1rem" }}>
               <Input label="Your name" name="name" placeholder="Name and surname" required />
-              <Input label="Mobile" name="mobile" type="tel" placeholder="082 000 0000" required />
+              <Input label="Mobile" name="mobile" type="tel" placeholder="063 097 7801" required />
               <Input label="Your business" name="business" placeholder="What you do, and roughly your size" />
               <Button variant="primary" size="lg" type="submit" disabled={busy} style={{ width: "100%" }}>
                 {busy ? "Sending…" : "Book the call"}
@@ -204,6 +306,7 @@ function CCBook() {
           )}
         </div>
       </div>
+      {celebrate && <CCCelebrateModal onClose={() => setCelebrate(false)} />}
     </section>
   );
 }
@@ -217,7 +320,7 @@ function CCFaq() {
       q: "Would this be of value for you?",
       a: (
         <>
-          <strong style={{ color: "var(--navy)", fontWeight: 600 }}>
+          <strong style={{ color: "var(--ink)", fontWeight: 700, fontStyle: "italic" }}>
             If you're committed to growing your business or fixing the issue, yes — this is for you.
           </strong>{" "}
           We give you the plan to grow your business. But it only works if you follow the plan.
@@ -247,8 +350,7 @@ function CCFaq() {
   return (
     <section style={{ background: "var(--surface-page)" }}>
       <div style={{ maxWidth: "var(--container-max)", margin: "0 auto", padding: "var(--section-y) var(--gutter)" }}>
-        <Eyebrow>Questions</Eyebrow>
-        <h2 style={{ marginTop: "0.8rem", marginBottom: "var(--space-7)" }}>Straight answers.</h2>
+        <h2 style={{ marginBottom: "var(--space-7)" }}>Frequently Asked Questions</h2>
         <div style={{ borderTop: "1px solid var(--border-subtle)" }}>
           {items.map((it, i) => {
             const isOpen = open === i;
