@@ -110,7 +110,7 @@ function FLWhatWeDo() {
               padding:'8px 0', borderTop:`1px solid ${FL_GOLD}`, borderBottom:`1px solid ${FL_GOLD}`,
             }}>
               <span style={{ color: FL_GOLD, fontSize: 8, letterSpacing: 4, transform:'translateY(-1px)' }}>◆</span>
-              <FLEyebrow color={FL_NAVY} style={{ letterSpacing: 4.5, fontWeight: 600 }}>Start Here · The Discovery Call</FLEyebrow>
+              <FLEyebrow color={FL_NAVY} style={{ letterSpacing: 4.5, fontWeight: 600 }}>Start Here · The Growth Audit</FLEyebrow>
               <span style={{ color: FL_GOLD, fontSize: 8, letterSpacing: 4, transform:'translateY(-1px)' }}>◆</span>
             </div>
             <h2 className="fl-reveal fl-r3" style={{
@@ -147,7 +147,7 @@ function FLWhatWeDo() {
               ))}
             </div>
             <div className="fl-reveal fl-r6" style={{ display: 'flex', gap: 14, marginTop: 14, flexWrap: 'wrap', alignItems: 'center' }}>
-              <FLButton href="#/contact" variant="filled">Book a Discovery Call →</FLButton>
+              <FLButton href="#/contact" variant="filled">Book Your Growth Audit →</FLButton>
             </div>
           </div>
         </div>
@@ -171,15 +171,15 @@ function FLWhatWeDo() {
             flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? 18 : 0,
           }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 620 }}>
-              <FLEyebrow className="fl-reveal fl-r1" color="rgba(244,239,227,.7)">What Happens In A Quarter</FLEyebrow>
+              <FLEyebrow className="fl-reveal fl-r1" color="rgba(244,239,227,.7)">Ready To Go Further</FLEyebrow>
               <h2 className="fl-reveal fl-r2" style={{ margin: 0, fontFamily: FL_DISPLAY, fontSize: isMobile ? 36 : 52, lineHeight: 1.05, fontWeight: 500, color: FL_IVORY_2, letterSpacing: -0.5 }}>
-                Twelve weeks,<br />
-                <span style={{ fontStyle: 'italic', color: FL_SAND_2 }}>four deliberate movements.</span>
+                When you want<br />
+                <span style={{ fontStyle: 'italic', color: FL_SAND_2 }}>the next level.</span>
               </h2>
             </div>
             {!isMobile && (
               <p className="fl-reveal fl-r3" style={{ margin: 0, maxWidth: 380, fontSize: 13.5, color: 'rgba(244,239,227,.7)', lineHeight: 1.8, fontFamily: FL_BODY }}>
-                Each phase has a defined output. You always know where we are, what we are doing, and what comes next. No surprises. No unnecessary scope changes mid-quarter. We set out to deliver what is most valuable — that's a promise.
+                When the audit shows there's further to go, this is how we take you there — a full quarter of execution. Each phase has a defined output, so you always know where we are and what comes next. No surprises, no scope creep. We set out to deliver what is most valuable — that's a promise.
               </p>
             )}
           </div>
@@ -227,22 +227,9 @@ function FLWhatWeDo() {
             display: 'flex', justifyContent: 'space-between', alignItems: 'center',
             gap: 24, flexWrap: 'wrap',
           }}>
-            <div style={{ display: 'flex', alignItems: isMobile ? 'flex-start' : 'center', gap: 18, flexDirection: isMobile ? 'column' : 'row' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '8px 16px', border: '1px solid rgba(244,239,227,.25)', color: 'rgba(244,239,227,.4)', fontFamily: FL_CAPS, fontSize: 10, letterSpacing: 3, textTransform: 'uppercase' }}>
-                  {intake.currentQuarter} — {flTakenPhrase(intake.currentBooked, intake.currentTotal)}
-                </div>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '8px 16px', border: `1px solid ${FL_SAND}`, color: FL_SAND_2, fontFamily: FL_CAPS, fontSize: 10, letterSpacing: 3, textTransform: 'uppercase' }}>
-                  <span style={{ width: 6, height: 6, background: FL_SAND_2, borderRadius: '50%' }} />
-                  {intake.nextQuarter} — {flLeftPhrase(intake.nextBooked, intake.nextTotal)}
-                </div>
-              </div>
-              {!isMobile && (
-                <span style={{ fontFamily: FL_DISPLAY, fontStyle: 'italic', fontSize: 16, color: 'rgba(244,239,227,.7)' }}>
-                  Applications close when the quarter fills.
-                </span>
-              )}
-            </div>
+            <span style={{ fontFamily: FL_DISPLAY, fontStyle: 'italic', fontSize: isMobile ? 18 : 20, color: 'rgba(244,239,227,.7)', maxWidth: 420 }}>
+              The audit comes first — the quarter is where we execute together.
+            </span>
             <FLButton href="#/contact" variant="sand">Reserve Your Quarter →</FLButton>
           </div>
         </div>
@@ -293,39 +280,6 @@ function FLWhatWeDo() {
                 <p style={{ margin: 0, fontSize: 13.5, color: FL_GRAPHITE, lineHeight: 1.7 }}>{it.d}</p>
               </div>
             ))}
-          </div>
-        </div>
-      </FLSection>
-
-      {/* ── 5. Final CTA strip ── */}
-      <FLSection
-        id="fl-wwd-cta"
-        style={{
-          minHeight: sectionMinH,
-          background: FL_IVORY,
-          display: 'flex', alignItems: 'center',
-          padding: isMobile ? '60px 24px' : '60px 40px',
-        }}
-      >
-        <div className="fl-reveal fl-r1" style={{
-          maxWidth: 1100, margin: '0 auto', width: '100%',
-          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          gap: 36, padding: isMobile ? '32px 24px' : '44px 56px',
-          border: `1px solid ${FL_SAND}`, background: FL_IVORY_2,
-          flexDirection: isMobile ? 'column' : 'row',
-        }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 560 }}>
-            <FLEyebrow>Apply for {featuredQ}</FLEyebrow>
-            <h3 style={{ margin: 0, fontFamily: FL_DISPLAY, fontSize: isMobile ? 26 : 34, fontWeight: 500, color: FL_NAVY, lineHeight: 1.15, letterSpacing: -0.3 }}>
-              {flLeftPhrase(featuredBooked, featuredTotal)} in {featuredQ}.<br />
-              <span style={{ fontStyle: 'italic', color: FL_GRAPHITE }}>Or begin with a discovery call.</span>
-            </h3>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: isMobile ? 'flex-start' : 'flex-end' }}>
-            <FLButton href="#/contact" variant="filled">Begin Your Application →</FLButton>
-            <span style={{ fontFamily: FL_DISPLAY, fontStyle: 'italic', fontSize: 14, color: FL_GRAPHITE, maxWidth: 320, textAlign: isMobile ? 'left' : 'right' }}>
-              Don't wait another quarter to fix what's costing you.
-            </span>
           </div>
         </div>
       </FLSection>

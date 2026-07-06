@@ -82,7 +82,7 @@ function FLTestimonialRotator({ isMobile }) {
             style={{
               position:'absolute', inset:0, margin:0,
               fontFamily: FL_DISPLAY,
-              fontSize: isMobile ? 22 : 32,
+              fontSize: isMobile ? 26 : 38,
               lineHeight:1.32, color: FL_IVORY_2, fontWeight:500, letterSpacing:-0.3,
               opacity: i === idx ? 1 : 0,
               transform: i === idx ? 'translateY(0)' : 'translateY(8px)',
@@ -267,9 +267,6 @@ function FLHome() {
             gap: isMobile ? 22 : 26,
             textAlign:'center',
           }}>
-            <FLEyebrow className="fl-reveal fl-r1" color="rgba(244,239,227,.78)">
-              Business Consultancy · {featuredQ} Intake
-            </FLEyebrow>
             <h1 className="fl-reveal fl-r2" style={{
               margin:0, fontFamily: FL_DISPLAY, color: FL_IVORY_2,
               fontSize: heroSize, lineHeight:1.02, fontWeight:500,
@@ -284,27 +281,25 @@ function FLHome() {
             </div>
             <p className="fl-reveal fl-r4" style={{
               margin:0, fontFamily: FL_DISPLAY,
-              fontSize: isMobile ? 18 : 22,
+              fontSize: isMobile ? 21 : 26,
               fontStyle:'italic', color:'rgba(244,239,227,.85)',
-              maxWidth:600, lineHeight:1.5, fontWeight:400,
+              maxWidth:640, lineHeight:1.5, fontWeight:400,
             }}>
               Honest diagnosis. Actionable plan. Focused execution. —<br />
-              Better systems, delivered in one quarter, not one year.
+              Walk away with a plan you can act on now, and start seeing results this quarter, not next year.
             </p>
             <div className="fl-reveal fl-r5" style={{ display:'flex', gap:14, marginTop:4, flexWrap:'wrap', justifyContent:'center' }}>
-              <FLButton href="#/contact" variant="sand">Book a Consultation →</FLButton>
+              <FLButton href="#/contact" variant="sand">Book Your Growth Audit →</FLButton>
               <FLButton href="#/wwd"     variant="ghost">See How We Work</FLButton>
             </div>
           </div>
           {!isMobile && (
             <div className="fl-reveal fl-r6" style={{
-              display:'flex', justifyContent:'space-between', alignItems:'center',
+              display:'flex', justifyContent:'center', alignItems:'center',
               padding:'18px 40px', borderTop:'1px solid rgba(244,239,227,.18)',
               color:'rgba(244,239,227,.7)', fontFamily: FL_CAPS,
-              fontSize:10, letterSpacing:3, textTransform:'uppercase',
+              fontSize:12, letterSpacing:3, textTransform:'uppercase',
             }}>
-              <span>◆ Limited intake — 5 clients per quarter</span>
-              <span style={{ color:'rgba(244,239,227,.5)' }}>Continue below</span>
               <span>Trusted by owners from Cape Town to New York</span>
             </div>
           )}
@@ -341,10 +336,10 @@ function FLHome() {
             <FLDivider width="80px" />
           </div>
           <p className="fl-reveal fl-r4" style={{
-            margin:0, fontSize:16, color: FL_GRAPHITE,
-            lineHeight:1.85, maxWidth:640, fontFamily: FL_BODY,
+            margin:0, fontSize:20, color: FL_GRAPHITE,
+            lineHeight:1.85, maxWidth:680, fontFamily: FL_BODY,
           }}>
-            We partner with founders and general managers for one focused quarter. We map the operation, surface the bottlenecks and put the system in place to fix them — together.
+            We work with business owners and managers for one focused session. We map the operation, surface the bottlenecks, and work out the systems to put in place to fix them — together.
           </p>
         </div>
       </FLSection>
@@ -381,10 +376,10 @@ function FLHome() {
             </div>
             {!isMobile && (
               <p className="fl-reveal fl-r3" style={{
-                margin:0, fontSize:14, color: FL_GRAPHITE,
-                lineHeight:1.8, maxWidth:380, fontFamily: FL_BODY,
+                margin:0, fontSize:17, color: FL_GRAPHITE,
+                lineHeight:1.8, maxWidth:400, fontFamily: FL_BODY,
               }}>
-                No fluff. No eight-month engagements. A short, intentional partnership built around what will actually move your business forward.
+                No fluff. No eight-month engagement. A focused two-hour session built around what will actually move your business forward.
               </p>
             )}
           </div>
@@ -410,11 +405,11 @@ function FLHome() {
                 <div style={{ padding:'22px 24px 24px', display:'flex', flexDirection:'column', gap:12 }}>
                   <div style={{ display:'flex', alignItems:'baseline', gap:14 }}>
                     <span style={{ fontFamily: FL_DISPLAY, fontSize:32, color: FL_SAND, fontWeight:500, lineHeight:1 }}>{card.n}</span>
-                    <h3 style={{ margin:0, fontFamily: FL_DISPLAY, fontSize:22, fontWeight:600, color: FL_NAVY, lineHeight:1.2 }}>{card.t}</h3>
+                    <h3 style={{ margin:0, fontFamily: FL_DISPLAY, fontSize:25, fontWeight:600, color: FL_NAVY, lineHeight:1.2 }}>{card.t}</h3>
                   </div>
-                  <p style={{ margin:0, fontSize:13.5, color: FL_GRAPHITE, lineHeight:1.7, fontFamily: FL_BODY }}>{card.d}</p>
+                  <p style={{ margin:0, fontSize:16, color: FL_GRAPHITE, lineHeight:1.7, fontFamily: FL_BODY }}>{card.d}</p>
                   <a href="#/wwd" style={{
-                    marginTop:4, fontFamily: FL_CAPS, fontSize:10,
+                    marginTop:4, fontFamily: FL_CAPS, fontSize:12,
                     letterSpacing:3, textTransform:'uppercase',
                     color: FL_NAVY, textDecoration:'none',
                     borderBottom:`1px solid ${FL_NAVY}`,
@@ -472,7 +467,7 @@ function FLHome() {
               Built for owners who are <span style={{ fontStyle:'italic' }}>frustrated</span> their business isn’t growing fast enough.
             </h2>
             <p className="fl-reveal fl-r4" style={{
-              margin:0, fontSize:15, color: FL_GRAPHITE,
+              margin:0, fontSize:18, color: FL_GRAPHITE,
               lineHeight:1.8, fontFamily: FL_BODY,
             }}>
               Most businesses stop growing — and it isn’t a strategy problem. The systems that got you here simply aren’t built to take you to the next million. They are now the thing holding you back. That’s where ForwardLine comes in — asking the hard questions and putting better systems in place.
@@ -480,8 +475,8 @@ function FLHome() {
             <FLEyebrow className="fl-reveal fl-r5" style={{ marginTop:8 }}>Our Principles</FLEyebrow>
             <div className="fl-reveal fl-r5" style={{ display:'flex', flexDirection:'column', gap:0, marginTop:0 }}>
               {[
-                { t:'Intentional, not transactional.', d:'A hard cap of five clients per quarter. Your business is important to you — so it’s important to us. That’s why we focus.' },
-                { t:'Quarterly, not endless.',         d:'Twelve weeks with a defined start, end and outcome. A clear finish line, a real result — and then we’re out of your way.' },
+                { t:'Intentional, not transactional.', d:'Your business matters to you — so it matters to us. We come prepared, and we don’t disappear once you have the plan in hand. You can still reach out to us afterward.' },
+                { t:'Focused, not drawn-out.',         d:'Two hours, not months of meetings. We get to the point, hand you a plan, and respect your time.' },
                 { t:'Honest by default.',              d:'Trust and transparency aren’t slogans here — they’re the work. We tell you what is actually holding your business back. We are hired to fix the problem, not to save your feelings.' },
               ].map((p, i) => (
                 <div key={i} style={{
@@ -491,8 +486,8 @@ function FLHome() {
                 }}>
                   <span style={{ fontFamily: FL_DISPLAY, fontSize:20, color: FL_SAND, fontWeight:500, minWidth:28 }}>0{i + 1}</span>
                   <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
-                    <span style={{ fontFamily: FL_DISPLAY, fontSize:20, fontWeight:600, color: FL_NAVY }}>{p.t}</span>
-                    <span style={{ fontSize:13.5, color: FL_GRAPHITE, lineHeight:1.65 }}>{p.d}</span>
+                    <span style={{ fontFamily: FL_DISPLAY, fontSize:23, fontWeight:600, color: FL_NAVY }}>{p.t}</span>
+                    <span style={{ fontSize:16, color: FL_GRAPHITE, lineHeight:1.65 }}>{p.d}</span>
                   </div>
                 </div>
               ))}
@@ -528,7 +523,7 @@ function FLHome() {
           }}>
             <div style={{ flex:1, height:1, background:'rgba(216,204,187,.25)' }} />
             <span style={{
-              fontFamily: FL_CAPS, fontSize:10, letterSpacing:4,
+              fontFamily: FL_CAPS, fontSize:13, letterSpacing:4,
               textTransform:'uppercase', color:'rgba(216,204,187,.75)',
             }}>By The Numbers</span>
             <div style={{ flex:1, height:1, background:'rgba(216,204,187,.25)' }} />
@@ -542,10 +537,10 @@ function FLHome() {
             alignItems:'start',
           }}>
             {[
-              { n:'5',    t:'Clients per quarter — by design' },
-              { n:'12',   t:'Weeks from first meeting to executed plan' },
-              { n:'1:1',  t:'One consultant, one client — dedicated weekly time, every week of the quarter' },
-              { n:'100%', t:'Every engagement closes with a plan you can take action on the next day' },
+              { n:'2',    t:'Hours between you and your growth plan' },
+              { n:'12',   t:'Weeks to execute the plan we hand you — measured in weeks, not years' },
+              { n:'1:1',  t:'One consultant, one client — full focus on your business' },
+              { n:'100%', t:'Every session closes with a plan you can take action on the next day' },
             ].map((s, i) => (
               <div key={i} style={{
                 display:'flex', flexDirection:'column', gap:6,
@@ -558,8 +553,8 @@ function FLHome() {
                   lineHeight:1, fontWeight:500, color: FL_SAND_2, letterSpacing:-2,
                 }}>{s.n}</span>
                 <span style={{
-                  fontFamily: FL_BODY, fontSize:12.5,
-                  color:'rgba(244,239,227,.7)', lineHeight:1.55, maxWidth:200,
+                  fontFamily: FL_BODY, fontSize:15,
+                  color:'rgba(244,239,227,.7)', lineHeight:1.55, maxWidth:210,
                 }}>{s.t}</span>
               </div>
             ))}
@@ -597,47 +592,15 @@ function FLHome() {
           </h2>
           <p className="fl-reveal fl-r3" style={{
             margin:0, fontFamily: FL_DISPLAY, fontStyle:'italic',
-            fontSize: isMobile ? 17 : 20,
-            color:'rgba(244,239,227,.78)', maxWidth:620, lineHeight:1.55,
+            fontSize: isMobile ? 20 : 24,
+            color:'rgba(244,239,227,.78)', maxWidth:640, lineHeight:1.55,
           }}>
-            {ctaIntakeLine}
+            Two hours is all it takes to sit down, get your growth plan, and start winning back time and money — so you can grow the business you always pictured.
           </p>
-          <div className="fl-reveal fl-r4" style={{
-            width:380, maxWidth:'100%', marginTop:4,
-            display:'flex', flexDirection:'column', gap:14,
-          }}>
-            {[
-              { label: intake.currentQuarter,                   sub: flTakenPhrase(intake.currentBooked, intake.currentTotal), fill: flFillPercent(intake.currentBooked, intake.currentTotal), fgColor: isCurrentFull ? 'rgba(244,239,227,.3)' : FL_SAND_2, textColor: isCurrentFull ? 'rgba(244,239,227,.4)' : 'rgba(244,239,227,.7)' },
-              { label: intake.nextQuarter,                      sub: flTakenPhrase(intake.nextBooked, intake.nextTotal),       fill: flFillPercent(intake.nextBooked, intake.nextTotal),       fgColor: isNextFull    ? 'rgba(244,239,227,.3)' : FL_SAND_2, textColor: isNextFull    ? 'rgba(244,239,227,.4)' : 'rgba(244,239,227,.7)' },
-            ].map(bar => (
-              <div key={bar.label} style={{ display:'flex', flexDirection:'column', gap:6 }}>
-                <div style={{
-                  display:'flex', justifyContent:'space-between',
-                  fontFamily: FL_CAPS, fontSize:10, letterSpacing:3,
-                  textTransform:'uppercase', color: bar.textColor,
-                }}>
-                  <span>{bar.label}</span><span>{bar.sub}</span>
-                </div>
-                <div style={{ height:4, background:'rgba(244,239,227,.12)' }}>
-                  <div style={{ height:'100%', width: bar.fill, background: bar.fgColor }} />
-                </div>
-              </div>
-            ))}
-          </div>
           <div className="fl-reveal fl-r5" style={{
             display:'flex', gap:14, marginTop:14, flexWrap:'wrap', justifyContent:'center',
           }}>
-            {isBothFull ? (
-              <>
-                <FLButton href="#/contact" variant="sand">Reserve Your Seat for the Next Quarter →</FLButton>
-                <FLButton href="#/contact" variant="ghost">Join the Waitlist</FLButton>
-              </>
-            ) : (
-              <>
-                <FLButton href="#/contact" variant="sand">Apply for {featuredQ} →</FLButton>
-                <FLButton href="#/contact" variant="ghost">No-Obligation Discovery Call</FLButton>
-              </>
-            )}
+            <FLButton href="#/contact" variant="sand">Book Your Growth Audit →</FLButton>
           </div>
         </div>
       </FLSection>
