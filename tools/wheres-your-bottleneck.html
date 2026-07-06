@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Where's Your Bottleneck? — Forwardline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#181E30; --sand:#D8CCBB; --taupe:#C4B8A3; --warmgrey:#A9A39A;
+    --darkgrey:#6E6A66; --charcoal:#2E2E2E; --paper:#FBF9F5; --lsand:#F5F0E8;
+    --tint:#EFE7D9; --cream:#F3ECE0;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:'Montserrat',sans-serif; background:var(--paper); color:var(--charcoal);
+       line-height:1.5; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:840px; margin:0 auto; padding:0 22px 60px;}
+
+  header{background:var(--navy); color:var(--cream); padding:34px 22px 30px; text-align:center;}
+  header .kicker{font-size:12px; letter-spacing:3px; text-transform:uppercase; color:var(--sand); font-weight:600;}
+  header h1{font-family:'Playfair Display',serif; font-weight:800; font-size:34px; margin:8px 0 6px; color:#fff;}
+  header p{max-width:600px; margin:0 auto; font-size:15px; color:var(--sand);}
+
+  /* progress trail */
+  .trail{display:flex; gap:8px; justify-content:center; margin:24px 0 4px; flex-wrap:wrap;}
+  .trail span{font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--warmgrey); font-weight:600;
+        padding:6px 12px; border-radius:16px; background:var(--lsand);}
+  .trail span.done{background:var(--navy); color:var(--cream);}
+
+  .panel{display:none;}
+  .panel.show{display:block; animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+
+  .q{font-family:'Playfair Display',serif; font-size:25px; color:var(--navy); text-align:center; margin:22px auto 6px; max-width:640px; line-height:1.25;}
+  .qsub{text-align:center; font-size:14px; color:var(--darkgrey); max-width:560px; margin:0 auto 22px;}
+
+  .choices{display:grid; grid-template-columns:1fr 1fr; gap:16px; max-width:680px; margin:0 auto;}
+  .choice{background:#fff; border:2px solid var(--sand); border-radius:10px; padding:24px 22px; cursor:pointer;
+        text-align:center; transition:all .15s;}
+  .choice:hover{border-color:var(--navy); transform:translateY(-2px); box-shadow:0 6px 18px rgba(24,30,48,.08);}
+  .choice .big{font-size:34px; margin-bottom:8px;}
+  .choice b{font-family:'Playfair Display',serif; font-size:19px; color:var(--navy); display:block; margin-bottom:4px;}
+  .choice span{font-size:13.5px; color:var(--darkgrey);}
+
+  .backbar{text-align:center; margin:22px 0 0;}
+  .link{background:none; border:none; color:var(--darkgrey); font-family:'Montserrat',sans-serif; font-size:13px;
+        cursor:pointer; text-decoration:underline; font-weight:500;}
+
+  /* result */
+  .res{max-width:720px; margin:8px auto 0;}
+  .rband{background:var(--navy); color:var(--cream); border-radius:10px 10px 0 0; padding:22px 26px; text-align:center;}
+  .rband .side{font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--sand); font-weight:600;}
+  .rband h2{font-family:'Playfair Display',serif; font-size:30px; color:#fff; margin:6px 0 4px;}
+  .rband p{font-size:14.5px; color:var(--sand); max-width:520px; margin:0 auto;}
+  .rbody{background:#fff; border:1px solid var(--sand); border-top:none; border-radius:0 0 10px 10px; padding:24px 26px;}
+  .rbody h3{font-size:12px; letter-spacing:1px; text-transform:uppercase; color:var(--navy); margin-bottom:10px;}
+  .rbody ul{list-style:none; margin:0 0 20px;}
+  .rbody li{position:relative; padding-left:26px; margin-bottom:9px; font-size:14.5px; color:var(--charcoal);}
+  .rbody li::before{content:"→"; position:absolute; left:0; color:var(--taupe); font-weight:700;}
+  .nexttool{background:var(--tint); border-radius:8px; padding:16px 18px; font-size:14.5px; color:var(--charcoal);}
+  .nexttool b{color:var(--navy);}
+  .nexttool .built{display:inline-block; background:var(--navy); color:var(--cream); font-size:10px; letter-spacing:1px;
+        text-transform:uppercase; padding:3px 8px; border-radius:10px; margin-left:6px; vertical-align:middle; font-weight:600;}
+  .nexttool .soon{display:inline-block; background:var(--sand); color:var(--navy); font-size:10px; letter-spacing:1px;
+        text-transform:uppercase; padding:3px 8px; border-radius:10px; margin-left:6px; vertical-align:middle; font-weight:600;}
+
+  .actions{margin:22px auto 0; display:flex; gap:12px; justify-content:center;}
+  button.act{font-family:'Montserrat',sans-serif; font-weight:600; font-size:13.5px; letter-spacing:.5px;
+        border:1px solid var(--navy); background:#fff; color:var(--navy); padding:11px 24px; border-radius:6px; cursor:pointer;}
+  button.act.primary{background:var(--navy); color:var(--cream);}
+  button.act:hover{opacity:.9;}
+
+  footer{margin-top:46px; text-align:center; font-size:11px; letter-spacing:2px; color:var(--warmgrey);
+        text-transform:uppercase; font-weight:600;}
+
+  @media (max-width:600px){ .choices{grid-template-columns:1fr;} .q{font-size:21px;} .rband h2{font-size:24px;} }
+  @media print{ .actions,.backbar,.trail{display:none;} body{background:#fff;} }
+
+  /* --- brand stamp + soft reach-out (added) --- */
+  .fl-logo{height:44px; width:auto; display:block; margin:0 auto 16px;}
+  .reachout{margin-top:44px; background:#fff; border:1px solid #D8CCBB; border-top:3px solid #B8893B; border-radius:12px; padding:26px 28px; text-align:center;}
+  .reachout p{font-family:'Montserrat',sans-serif; font-size:15px; color:#2E2E2E; max-width:520px; margin:0 auto 16px; line-height:1.55;}
+  .reachout .reachlinks{display:flex; gap:10px 22px; justify-content:center; flex-wrap:wrap;}
+  .reachout .reachlinks a{font-family:'Montserrat',sans-serif; font-weight:700; font-size:15px; color:#181E30; text-decoration:none; border-bottom:2px solid #B8893B; padding-bottom:2px;}
+  .reachout .reachlinks a:hover{color:#B8893B;}
+  @media print{ .reachout{break-inside:avoid;} }
+</style>
+</head>
+<body>
+
+<header>
+  <svg class="fl-logo" role="img" aria-label="ForwardLine" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="56 71 260 201" preserveAspectRatio="xMidYMid meet" version="1.0"><defs><g/><clipPath id="f6e39aeb9b"><path d="M 0.71875 166 L 91 166 L 91 174 L 0.71875 174 Z M 0.71875 166 " clip-rule="nonzero"/></clipPath><clipPath id="3b8b7ee3ce"><path d="M 230 0.121094 L 251 0.121094 L 251 28 L 230 28 Z M 230 0.121094 " clip-rule="nonzero"/></clipPath><clipPath id="47b0f938a2"><path d="M 0.71875 148 L 252 148 L 252 192.359375 L 0.71875 192.359375 Z M 0.71875 148 " clip-rule="nonzero"/></clipPath><clipPath id="b02ab58922"><rect x="0" width="252" y="0" height="193"/></clipPath></defs><g transform="matrix(1, 0, 0, 1, 60, 75)"><g clip-path="url(#b02ab58922)"><g fill="#F4EFE3" fill-opacity="1"><g transform="translate(103.139672, 167.286728)"><g><path d="M 5.390625 0 L 5.390625 -63.421875 L 45.421875 -63.421875 L 45.421875 -56.765625 L 12.859375 -56.765625 L 12.859375 -34.8125 L 40.125 -34.8125 L 40.125 -28.421875 L 12.859375 -28.421875 L 12.859375 0 Z M 5.390625 0 "/></g></g></g><g clip-path="url(#f6e39aeb9b)"><path stroke-linecap="butt" transform="matrix(1.686585, 0.000000000000003881, -0.000000000000003881, 1.686585, 4.221958, 166.842479)" fill="none" stroke-linejoin="miter" d="M 0.00041383 1.999523 L 49.402212 1.999523 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/></g><path stroke-linecap="butt" transform="matrix(0, 1.686585, -1.686585, 0, 90.907259, 90.276697)" fill="none" stroke-linejoin="miter" d="M 0.00038338 1.999368 L 49.402182 1.999368 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/><path stroke-linecap="butt" transform="matrix(1.686585, 0.000000000000001941, -0.000000000000001941, 1.686585, 87.544756, 90.26602)" fill="none" stroke-linejoin="miter" d="M -0.00105993 2.000852 L 49.403055 2.000852 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/><path stroke-linecap="butt" transform="matrix(1.686585, 0.000000000000001941, -0.000000000000001941, 1.686585, 167.494384, 10.316391)" fill="none" stroke-linejoin="miter" d="M 0.00101376 2.001095 L 38.40379 2.001095 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/><path fill="#F4EFE3" d="M 233.953125 3.570312 L 247.445312 13.691406 L 233.953125 23.808594 Z M 233.953125 3.570312 " fill-opacity="1" fill-rule="nonzero"/><g clip-path="url(#3b8b7ee3ce)"><path stroke-linecap="round" transform="matrix(1.686585, 0.000000000000001941, -0.000000000000001941, 1.686585, 167.494384, 10.316391)" fill="none" stroke-linejoin="round" d="M 39.404333 -3.999846 L 47.404043 2.001095 L 39.404333 7.999719 Z M 39.404333 -3.999846 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/></g><g clip-path="url(#47b0f938a2)"><path stroke-linecap="butt" transform="matrix(1.686539, 0.0124639, -0.0124639, 1.686539, 4.232659, 183.708439)" fill="none" stroke-linejoin="miter" d="M -0.000412732 2.000308 L 135.317426 2.000849 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/></g><path stroke-linecap="butt" transform="matrix(0, 1.686585, -1.686585, 0, 170.856889, 10.327055)" fill="none" stroke-linejoin="miter" d="M 0.000634444 1.999612 L 49.402433 1.999612 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/><g fill="#F4EFE3" fill-opacity="1"><g transform="translate(156.362553, 167.286728)"><g><path d="M 5.390625 0 L 5.390625 -63.421875 L 12.859375 -63.421875 L 12.859375 -6.65625 L 45.34375 -6.65625 L 45.34375 0 Z M 5.390625 0 "/></g></g></g></g></g></svg>
+  <div class="kicker">Growth Audit Tools</div>
+  <h1>Where's Your Bottleneck?</h1>
+  <p>Most owners fix the wrong thing. Your business only ever has one real blocker at a time. Three quick taps to find yours.</p>
+</header>
+
+<div class="wrap">
+
+  <div class="trail" id="trail">
+    <span id="t1">1. The big question</span>
+    <span id="t2">2. Narrow it down</span>
+    <span id="t3">3. Your blocker</span>
+  </div>
+
+  <!-- STEP 1: master question -->
+  <div class="panel show" id="step1">
+    <div class="q">If twice as many customers came next month, could you handle it — or would it be a mess?</div>
+    <div class="qsub">Be honest. This one answer splits every business in two.</div>
+    <div class="choices">
+      <div class="choice" onclick="pickSide('demand')">
+        <div class="big">😌</div>
+        <b>I could handle it</b>
+        <span>I've got room to do more work — I just need more customers.</span>
+      </div>
+      <div class="choice" onclick="pickSide('supply')">
+        <div class="big">😰</div>
+        <b>It'd be a mess</b>
+        <span>I couldn't cope — I'm already stretched delivering what I've got.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: tiebreaker -->
+  <div class="panel" id="step2">
+    <div class="q" id="tieQ"></div>
+    <div class="qsub" id="tieSub"></div>
+    <div class="choices" id="tieChoices"></div>
+    <div class="backbar"><button class="link" onclick="goStep(1)">← back</button></div>
+  </div>
+
+  <!-- STEP 3: result -->
+  <div class="panel" id="step3">
+    <div class="res" id="res"></div>
+    <div class="actions">
+      <button class="act" onclick="restart()">Start over</button>
+      <button class="act primary" onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </div>
+
+    <div class="reachout">
+    <p>Not sure what these numbers are telling you &mdash; or you can see the problem but not how to fix it? That's what we're here for. If you'd like help turning these numbers into a plan to grow, reach out.</p>
+    <div class="reachlinks">
+      <a href="https://wa.me/27630977801">WhatsApp us &middot; 063 097 7801</a>
+      <a href="https://www.forwardline.co.za">forwardline.co.za</a>
+    </div>
+  </div>
+
+  <footer>Forwardline&nbsp; | &nbsp;Find and Fix Business Growth Blockers&nbsp; | &nbsp;Your growth matters to us.</footer>
+</div>
+
+<script>
+const TIE = {
+  demand:{
+    q:"Do enough people ask you for prices or quotes — but not many actually book?",
+    sub:"This tells us whether you need MORE enquiries, or you need to win the ones you already get.",
+    a:{ label:"Yes — plenty ask, few book", value:"conversion", icon:"💬", sub:"Enquiries come in, but they don't turn into paid jobs." },
+    b:{ label:"No — not enough ask in the first place", value:"leads", icon:"📣", sub:"The phone just doesn't ring enough." }
+  },
+  supply:{
+    q:"Are you busy and booked — but there's not much money left at the end?",
+    sub:"This tells us whether you simply can't get it all done, or you're doing plenty but not keeping the profit.",
+    a:{ label:"Yes — busy but broke", value:"profit", icon:"💸", sub:"Lots of work, little left over." },
+    b:{ label:"No — I just physically can't keep up", value:"capacity", icon:"⏳", sub:"Too much work, not enough hands or hours." }
+  }
+};
+
+const ZONE = {
+  leads:{ side:"Demand problem — you need more customers", name:"Getting Customers In",
+    why:"Your business can take more work — the blocker is simply not enough people coming to you.",
+    wins:["Ask every happy customer for one referral — the cheapest customers you'll ever get.",
+          "Get more reviews, and post before/after photos of recent jobs so people can find and trust you.",
+          "Make sure you're easy to find and easy to contact (Google, WhatsApp, a clear number)."],
+    toolline:"how much you can safely spend to bring in a new customer without overspending." },
+  conversion:{ side:"Demand problem — you're losing the customers you already get", name:"Turning Enquiries Into Buyers",
+    why:"People are interested — but too many slip away before they book. Winning even a few more is free money.",
+    wins:["Reply fast — ideally within the hour. The first to answer usually wins the job.",
+          "Follow up at least twice. Most sales are lost simply because nobody followed up.",
+          "Make the quote simple and add a guarantee so saying yes feels safe."],
+    toolline:"the rands you lose every month from slow or missed replies." },
+  capacity:{ side:"Supply problem — you can't keep up", name:"Doing The Work",
+    why:"The work is there and the money's there — you just can't physically deliver it all. Until this clears, more customers only makes it worse.",
+    wins:["Find the one step that's most backed up and add hands or hours there first.",
+          "Take low-value jobs off your own plate so you focus on the work only you can do.",
+          "Raise your price a little — it eases the rush and lifts profit at the same time."],
+    toolline:"exactly where you're jammed, and the role to hire next." },
+  profit:{ side:"Supply problem — the money leaks out", name:"Keeping The Money",
+    why:"You're busy enough — but too little reaches your pocket. Fixing this makes you more money without a single extra customer.",
+    wins:["Check what each job really makes after materials, time and overhead — some may be losing you money.",
+          "Raise your prices. A small rise drops almost straight to profit.",
+          "Drop or fix the jobs and customers that cost more than they're worth."],
+    toolline:"your break-even, and what the right price does to your profit." }
+};
+
+let side=null;
+
+function pickSide(s){
+  side=s;
+  document.getElementById('t1').classList.add('done');
+  const t=TIE[s];
+  document.getElementById('tieQ').textContent=t.q;
+  document.getElementById('tieSub').textContent=t.sub;
+  document.getElementById('tieChoices').innerHTML =
+    [t.a,t.b].map(o=>`<div class="choice" onclick="pickZone('${o.value}')">
+        <div class="big">${o.icon}</div><b>${o.label}</b><span>${o.sub}</span></div>`).join('');
+  goStep(2);
+}
+
+function pickZone(z){
+  document.getElementById('t2').classList.add('done');
+  document.getElementById('t3').classList.add('done');
+  const d=ZONE[z];
+  document.getElementById('res').innerHTML = `
+    <div class="rband">
+      <div class="side">${d.side}</div>
+      <h2>${d.name}</h2>
+      <p>${d.why}</p>
+    </div>
+    <div class="rbody">
+      <h3>Quick wins — start here</h3>
+      <ul>${d.wins.map(w=>`<li>${w}</li>`).join('')}</ul>
+      <div class="nexttool"><b>Worth working out next:</b> ${d.toolline}</div>
+    </div>`;
+  goStep(3);
+}
+
+function goStep(n){
+  [1,2,3].forEach(i=>document.getElementById('step'+i).classList.toggle('show', i===n));
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function restart(){
+  side=null;
+  ['t1','t2','t3'].forEach(id=>document.getElementById(id).classList.remove('done'));
+  goStep(1);
+}
+</script>
+</body>
+</html>

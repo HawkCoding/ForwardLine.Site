@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Leaky Bucket — Forwardline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#181E30; --sand:#D8CCBB; --taupe:#C4B8A3; --warmgrey:#A9A39A;
+    --darkgrey:#6E6A66; --charcoal:#2E2E2E; --paper:#FBF9F5; --lsand:#F5F0E8;
+    --tint:#EFE7D9; --cream:#F3ECE0; --bad:#8a3b2e;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:'Montserrat',sans-serif; background:var(--paper); color:var(--charcoal);
+       line-height:1.55; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:680px; margin:0 auto; padding:0 22px 64px;}
+
+  header{background:var(--navy); color:var(--cream); padding:38px 22px 32px; text-align:center;}
+  header .kicker{font-size:12px; letter-spacing:3px; text-transform:uppercase; color:var(--sand); font-weight:600;}
+  header h1{font-family:'Playfair Display',serif; font-weight:800; font-size:35px; margin:8px 0 8px; color:#fff;}
+  header p{max-width:520px; margin:0 auto; font-size:15px; color:var(--sand);}
+
+  .card{background:#fff; border:1px solid var(--sand); border-radius:12px; padding:26px 28px; margin-top:24px;}
+  .step{display:inline-block; background:var(--tint); color:var(--navy); font-weight:600; font-size:11px;
+        letter-spacing:1.5px; text-transform:uppercase; padding:5px 12px; border-radius:14px; margin-bottom:14px;}
+  .card h2{font-family:'Playfair Display',serif; font-size:22px; color:var(--navy); margin-bottom:6px;}
+  .card .lead{font-size:14px; color:var(--darkgrey); margin-bottom:20px;}
+
+  .field{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:13px 0; border-bottom:1px solid var(--lsand);}
+  .field:last-child{border-bottom:none;}
+  .field label{font-size:15px; color:var(--charcoal); font-weight:500;}
+  .field label small{display:block; font-size:12px; color:var(--warmgrey); font-weight:400; margin-top:2px;}
+  .inwrap{position:relative; flex:none;}
+  .inwrap .pre{position:absolute; left:13px; top:50%; transform:translateY(-50%); color:var(--darkgrey); font-size:15px; font-weight:600;}
+  input[type=number]{font-family:'Montserrat',sans-serif; font-size:15px; font-weight:600; color:var(--navy);
+        border:1px solid var(--taupe); border-radius:7px; padding:11px 13px; text-align:right; background:var(--paper); width:130px;}
+  .inwrap input[type=number]{padding-left:30px;}
+  input[type=number]:focus{outline:none; border-color:var(--navy); background:#fff;}
+  input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none; margin:0;}
+
+  .results{display:none; margin-top:24px;} .results.show{display:block;}
+
+  /* funnel */
+  .funnel{background:#fff; border:1px solid var(--sand); border-radius:12px; padding:24px 26px;}
+  .funnel h3{font-family:'Playfair Display',serif; font-size:19px; color:var(--navy); margin-bottom:16px;}
+  .stage{margin-bottom:4px;}
+  .stage .top{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:5px;}
+  .stage .nm{font-size:14px; color:var(--charcoal); font-weight:600;}
+  .stage .ct{font-size:14px; color:var(--navy); font-weight:700;}
+  .stage .track{height:26px; background:var(--lsand); border-radius:6px; overflow:hidden;}
+  .stage .fill{height:100%; background:var(--navy); border-radius:6px; transition:width .3s; min-width:2px;}
+  .drop{display:flex; align-items:center; gap:8px; padding:6px 0 10px 4px; font-size:12.5px; color:var(--darkgrey);}
+  .drop .arw{color:var(--warmgrey);}
+  .drop.leak{color:var(--bad); font-weight:600;}
+  .drop.leak .arw{color:var(--bad);}
+
+  /* biggest leak */
+  .leakbox{background:var(--navy); color:var(--cream); border-radius:12px; padding:28px 26px; margin-top:14px; text-align:center;}
+  .leakbox .lbl{font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--sand); font-weight:600;}
+  .leakbox .where{font-family:'Playfair Display',serif; font-size:26px; color:#fff; margin:6px 0 6px;}
+  .leakbox .big{font-family:'Playfair Display',serif; font-size:42px; color:#fff; line-height:1.05;}
+  .leakbox .big small{font-size:16px; color:var(--sand);}
+  .leakbox .money{font-size:14.5px; color:var(--sand); margin-top:6px;}
+  .leakbox .money b{color:#fff;}
+  .leakbox .tip{background:rgba(255,255,255,.08); border:1px solid var(--sand); border-radius:9px; padding:14px 16px; font-size:14px; margin-top:16px; text-align:left;}
+  .leakbox .tip b{color:#fff;}
+  .leakbox.win .big{color:#cfe6d8;}
+
+  .nexttool{background:#fff; border:1px solid var(--sand); border-left:5px solid var(--navy); border-radius:10px;
+        padding:15px 18px; font-size:14px; margin-top:14px; color:var(--charcoal);}
+  .nexttool b{color:var(--navy);}
+  .actions{margin:24px auto 0; display:flex; gap:12px; justify-content:center;}
+  button.act{font-family:'Montserrat',sans-serif; font-weight:600; font-size:13.5px; letter-spacing:.5px;
+        border:1px solid var(--navy); background:#fff; color:var(--navy); padding:12px 26px; border-radius:7px; cursor:pointer;}
+  button.act.primary{background:var(--navy); color:var(--cream);} button.act:hover{opacity:.9;}
+  .emptyhint{background:#fff; border:1px dashed var(--taupe); border-radius:12px; padding:22px; text-align:center; color:var(--darkgrey); font-size:14.5px;}
+  .src{font-size:11px; color:var(--warmgrey); text-align:center; margin-top:12px;}
+
+  footer{margin-top:48px; text-align:center; font-size:11px; letter-spacing:2px; color:var(--warmgrey); text-transform:uppercase; font-weight:600;}
+  @media (max-width:560px){ .leakbox .big{font-size:34px;} input[type=number]{width:110px;} }
+  @media print{ .actions{display:none;} body{background:#fff;} }
+
+  /* --- brand stamp + soft reach-out (added) --- */
+  .fl-logo{height:44px; width:auto; display:block; margin:0 auto 16px;}
+  .reachout{margin-top:44px; background:#fff; border:1px solid #D8CCBB; border-top:3px solid #B8893B; border-radius:12px; padding:26px 28px; text-align:center;}
+  .reachout p{font-family:'Montserrat',sans-serif; font-size:15px; color:#2E2E2E; max-width:520px; margin:0 auto 16px; line-height:1.55;}
+  .reachout .reachlinks{display:flex; gap:10px 22px; justify-content:center; flex-wrap:wrap;}
+  .reachout .reachlinks a{font-family:'Montserrat',sans-serif; font-weight:700; font-size:15px; color:#181E30; text-decoration:none; border-bottom:2px solid #B8893B; padding-bottom:2px;}
+  .reachout .reachlinks a:hover{color:#B8893B;}
+  @media print{ .reachout{break-inside:avoid;} }
+</style>
+</head>
+<body>
+
+<header>
+  <svg class="fl-logo" role="img" aria-label="ForwardLine" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="56 71 260 201" preserveAspectRatio="xMidYMid meet" version="1.0"><defs><g/><clipPath id="f6e39aeb9b"><path d="M 0.71875 166 L 91 166 L 91 174 L 0.71875 174 Z M 0.71875 166 " clip-rule="nonzero"/></clipPath><clipPath id="3b8b7ee3ce"><path d="M 230 0.121094 L 251 0.121094 L 251 28 L 230 28 Z M 230 0.121094 " clip-rule="nonzero"/></clipPath><clipPath id="47b0f938a2"><path d="M 0.71875 148 L 252 148 L 252 192.359375 L 0.71875 192.359375 Z M 0.71875 148 " clip-rule="nonzero"/></clipPath><clipPath id="b02ab58922"><rect x="0" width="252" y="0" height="193"/></clipPath></defs><g transform="matrix(1, 0, 0, 1, 60, 75)"><g clip-path="url(#b02ab58922)"><g fill="#F4EFE3" fill-opacity="1"><g transform="translate(103.139672, 167.286728)"><g><path d="M 5.390625 0 L 5.390625 -63.421875 L 45.421875 -63.421875 L 45.421875 -56.765625 L 12.859375 -56.765625 L 12.859375 -34.8125 L 40.125 -34.8125 L 40.125 -28.421875 L 12.859375 -28.421875 L 12.859375 0 Z M 5.390625 0 "/></g></g></g><g clip-path="url(#f6e39aeb9b)"><path stroke-linecap="butt" transform="matrix(1.686585, 0.000000000000003881, -0.000000000000003881, 1.686585, 4.221958, 166.842479)" fill="none" stroke-linejoin="miter" d="M 0.00041383 1.999523 L 49.402212 1.999523 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/></g><path stroke-linecap="butt" transform="matrix(0, 1.686585, -1.686585, 0, 90.907259, 90.276697)" fill="none" stroke-linejoin="miter" d="M 0.00038338 1.999368 L 49.402182 1.999368 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/><path stroke-linecap="butt" transform="matrix(1.686585, 0.000000000000001941, -0.000000000000001941, 1.686585, 87.544756, 90.26602)" fill="none" stroke-linejoin="miter" d="M -0.00105993 2.000852 L 49.403055 2.000852 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/><path stroke-linecap="butt" transform="matrix(1.686585, 0.000000000000001941, -0.000000000000001941, 1.686585, 167.494384, 10.316391)" fill="none" stroke-linejoin="miter" d="M 0.00101376 2.001095 L 38.40379 2.001095 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/><path fill="#F4EFE3" d="M 233.953125 3.570312 L 247.445312 13.691406 L 233.953125 23.808594 Z M 233.953125 3.570312 " fill-opacity="1" fill-rule="nonzero"/><g clip-path="url(#3b8b7ee3ce)"><path stroke-linecap="round" transform="matrix(1.686585, 0.000000000000001941, -0.000000000000001941, 1.686585, 167.494384, 10.316391)" fill="none" stroke-linejoin="round" d="M 39.404333 -3.999846 L 47.404043 2.001095 L 39.404333 7.999719 Z M 39.404333 -3.999846 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/></g><g clip-path="url(#47b0f938a2)"><path stroke-linecap="butt" transform="matrix(1.686539, 0.0124639, -0.0124639, 1.686539, 4.232659, 183.708439)" fill="none" stroke-linejoin="miter" d="M -0.000412732 2.000308 L 135.317426 2.000849 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/></g><path stroke-linecap="butt" transform="matrix(0, 1.686585, -1.686585, 0, 170.856889, 10.327055)" fill="none" stroke-linejoin="miter" d="M 0.000634444 1.999612 L 49.402433 1.999612 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/><g fill="#F4EFE3" fill-opacity="1"><g transform="translate(156.362553, 167.286728)"><g><path d="M 5.390625 0 L 5.390625 -63.421875 L 12.859375 -63.421875 L 12.859375 -6.65625 L 45.34375 -6.65625 L 45.34375 0 Z M 5.390625 0 "/></g></g></g></g></g></svg>
+  <div class="kicker">Growth Audit Tools</div>
+  <h1>The Leaky Bucket</h1>
+  <p>Pouring in more leads won't help if your bucket leaks. Let's find the biggest hole — that's where the money is.</p>
+</header>
+
+<div class="wrap">
+
+  <!-- STEP 1 -->
+  <div class="card">
+    <span class="step">Step 1 — a normal month</span>
+    <h2>How many make it to each stage?</h2>
+    <p class="lead">Follow your customers through the month. Rough counts are fine — each number should be smaller than the one above it.</p>
+    <div class="field">
+      <label>Enquiries<small>everyone who phones, messages or asks</small></label>
+      <div class="inwrap"><input type="number" id="s0" min="0" step="1" placeholder="0"></div>
+    </div>
+    <div class="field">
+      <label>Got a quote / price<small>how many you actually quoted</small></label>
+      <div class="inwrap"><input type="number" id="s1" min="0" step="1" placeholder="0"></div>
+    </div>
+    <div class="field">
+      <label>Said yes / booked<small>how many turned into a booked job</small></label>
+      <div class="inwrap"><input type="number" id="s2" min="0" step="1" placeholder="0"></div>
+    </div>
+    <div class="field">
+      <label>Job done & paid<small>how many you completed and got paid for</small></label>
+      <div class="inwrap"><input type="number" id="s3" min="0" step="1" placeholder="0"></div>
+    </div>
+    <div class="field">
+      <label>Came back or referred<small>how many became repeat or sent someone</small></label>
+      <div class="inwrap"><input type="number" id="s4" min="0" step="1" placeholder="0"></div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="card">
+    <span class="step">Step 2 — job value</span>
+    <h2>What a job is worth</h2>
+    <p class="lead">So we can show what the biggest leak is costing you.</p>
+    <div class="field">
+      <label>Average job value<small>your typical price per job</small></label>
+      <div class="inwrap"><span class="pre">R</span><input type="number" id="val" min="0" step="100" placeholder="0"></div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results" id="results">
+    <div class="funnel">
+      <h3>Your bucket, stage by stage</h3>
+      <div id="stages"></div>
+    </div>
+    <div class="leakbox" id="leakbox"></div>
+    <div class="nexttool" id="nextTool"></div>
+    <div class="src">Fix the biggest leak first — a small gain low in the bucket beats chasing more leads at the top.</div>
+    <div class="actions">
+      <button class="act" onclick="clearAll()">Clear</button>
+      <button class="act primary" onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </div>
+
+  <div class="results" id="prompt2">
+    <div class="emptyhint">Fill in at least your enquiries and one or two stages below them to see where your bucket leaks.</div>
+  </div>
+
+    <div class="reachout">
+    <p>Not sure what these numbers are telling you &mdash; or you can see the problem but not how to fix it? That's what we're here for. If you'd like help turning these numbers into a plan to grow, reach out.</p>
+    <div class="reachlinks">
+      <a href="https://wa.me/27630977801">WhatsApp us &middot; 063 097 7801</a>
+      <a href="https://www.forwardline.co.za">forwardline.co.za</a>
+    </div>
+  </div>
+
+  <footer>Forwardline&nbsp; | &nbsp;Find and Fix Business Growth Blockers&nbsp; | &nbsp;Your growth matters to us.</footer>
+</div>
+
+<script>
+const rands = n => "R" + Math.round(n).toLocaleString('en-ZA');
+const $ = id => document.getElementById(id);
+const STAGES = ["Enquiries","Got a quote","Said yes / booked","Done & paid","Came back / referred"];
+const LEAKS = [
+  {name:"Enquiry → quote",
+   tip:"People reach out but don't get a quote fast enough — or at all. Reply within minutes, every time, and always send the price.",
+   toolNote:"reply faster \u2014 it's worth working out what slow replies are costing you in lost jobs."},
+  {name:"Quote → booked",
+   tip:"They get a price but don't say yes. Follow up at least twice, keep the quote simple, and add a guarantee so saying yes feels safe.",
+   toolNote:"give people reasons to say yes beyond price \u2014 it helps to know what your customers really want."},
+  {name:"Booked → done & paid",
+   tip:"Jobs get booked but fall away or go unpaid. Take a deposit up front, confirm the date, and invoice on the day.",
+   toolNote:""},
+  {name:"Paid → repeat",
+   tip:"Customers buy once and never come back. A quick follow-up, a reminder, or a small offer brings a good share of them back.",
+   toolNote:"chase repeat work \u2014 there's often money hiding in your old customers."},
+];
+
+function calc(){
+  const v=[0,1,2,3,4].map(i=>parseFloat($('s'+i).value)||0);
+  const val=parseFloat($('val').value)||0;
+
+  if(v[0]<=0 || v[1]+v[2]+v[3]+v[4]<=0){
+    $('results').classList.remove('show'); $('prompt2').classList.add('show'); save(); return;
+  }
+  $('prompt2').classList.remove('show');
+
+  const top=v[0];
+  // funnel bars
+  $('stages').innerHTML = STAGES.map((s,i)=>{
+    const w = top>0 ? Math.max(v[i]/top*100,0) : 0;
+    let html = `<div class="stage"><div class="top"><span class="nm">${s}</span><span class="ct">${v[i]}</span></div>
+      <div class="track"><div class="fill" style="width:${Math.min(w,100)}%"></div></div></div>`;
+    if(i<4){
+      const lost=Math.max(v[i]-v[i+1],0);
+      const pct = v[i]>0 ? Math.round(lost/v[i]*100) : 0;
+      html += `<div class="drop" data-t="${i}"><span class="arw">↓</span> lost ${lost} (${pct}%)</div>`;
+    }
+    return html;
+  }).join('');
+
+  // biggest leak by % drop
+  let best=-1, bi=0;
+  for(let i=0;i<4;i++){
+    const lost=Math.max(v[i]-v[i+1],0);
+    const pct = v[i]>0 ? lost/v[i] : 0;
+    if(pct>best){ best=pct; bi=i; }
+  }
+  const lost=Math.max(v[bi]-v[bi+1],0);
+  const pct=Math.round(best*100);
+  // highlight that drop row
+  const dropEl=document.querySelector('.drop[data-t="'+bi+'"]');
+  if(dropEl) dropEl.classList.add('leak');
+
+  const leak=LEAKS[bi];
+  const box=$('leakbox');
+  if(lost<=0){
+    box.className='leakbox win';
+    box.innerHTML = `<div class="lbl">Nice — no big leak</div>
+      <div class="big">Your bucket holds well</div>
+      <div class="money">Very few customers are slipping away between stages. Keep it up — and pour more leads in the top.</div>`;
+    $('nextTool').innerHTML = `Now focus on filling the bucket \u2014 it's worth working out how much you can safely spend to bring in one new enquiry.`;
+    $('results').classList.add('show'); save(); return;
+  }
+
+  box.className='leakbox';
+  box.innerHTML = `<div class="lbl">Your biggest leak</div>
+    <div class="where">${leak.name}</div>
+    <div class="big">${lost} lost <small>a month (${pct}% drop)</small></div>
+    ${val>0?`<div class="money">That's as much as <b>${rands(lost*val)} a month</b> — around <b>${rands(lost*val*12)} a year</b> — slipping out of the bucket here.</div>`:`<div class="money">Add an average job value above to see what this is costing you.</div>`}
+    <div class="tip"><b>Plug it:</b> ${leak.tip}</div>`;
+
+  if(leak.toolNote){
+    $('nextTool').style.display='block';
+    $('nextTool').innerHTML = `<b>Your next step:</b> ${leak.toolNote}`;
+  } else {
+    $('nextTool').style.display='none';
+  }
+
+  $('results').classList.add('show');
+  save();
+}
+
+function clearAll(){
+  ['s0','s1','s2','s3','s4','val'].forEach(id=>$(id).value='');
+  calc(); try{localStorage.removeItem('fl_leakybucket');}catch(e){}
+}
+function save(){
+  try{ localStorage.setItem('fl_leakybucket', JSON.stringify({
+    s0:$('s0').value,s1:$('s1').value,s2:$('s2').value,s3:$('s3').value,s4:$('s4').value,val:$('val').value })); }catch(e){}
+}
+function load(){
+  try{ const s=JSON.parse(localStorage.getItem('fl_leakybucket')||'null'); if(!s) return;
+    ['s0','s1','s2','s3','s4','val'].forEach(id=>{ if(s[id]!==undefined) $(id).value=s[id]; });
+  }catch(e){}
+}
+document.addEventListener('input', e=>{ if(e.target.matches('input')) calc(); });
+load(); calc();
+</script>
+</body>
+</html>

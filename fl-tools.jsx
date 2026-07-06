@@ -32,52 +32,46 @@ const FL_TOOLS = [
     html: 'tools/are-you-charging-enough.html',
   },
   {
-    slug: 'cac',
+    slug: 'what-one-customer-is-worth',
     kind: 'Calculator',
-    title: 'Customer Acquisition Cost',
-    blurb: 'What it truly costs to win one new customer once every rand of sales and marketing is counted.',
+    title: 'What One Customer Is Worth to You',
+    blurb: 'Three numbers in, one honest figure out — how much a single customer brings you over the whole relationship, not just the first sale.',
+    html: 'tools/what-one-customer-is-worth.html',
   },
   {
-    slug: 'ltv',
+    slug: 'new-customer-real-cost',
     kind: 'Calculator',
-    title: 'Customer Lifetime Value',
-    blurb: 'What a single customer is worth to you across the whole of the relationship — not just the first sale.',
+    title: 'What a New Customer Really Costs',
+    blurb: 'No ad spend doesn’t mean free. You pay in hours — quotes, calls, follow-ups. Put a rand value on what winning one customer actually costs you.',
+    html: 'tools/new-customer-real-cost.html',
   },
   {
-    slug: 'ltv-cac',
+    slug: 'money-hiding-in-old-customers',
     kind: 'Calculator',
-    title: 'LTV : CAC Ratio',
-    blurb: 'The one ratio that tells you whether your growth spend is building the business or quietly draining it.',
+    title: 'Money Hiding in Your Old Customers',
+    blurb: 'Two numbers show you the cash sitting in customers you already have — often the fastest money in your business.',
+    html: 'tools/money-hiding-in-old-customers.html',
   },
   {
-    slug: 'customer-value',
+    slug: 'what-slow-replies-cost',
     kind: 'Calculator',
-    title: 'True Value of a Customer',
-    blurb: 'Repeat business, margin and referrals folded into a single honest number you can act on.',
+    title: 'What Slow Replies Cost You',
+    blurb: 'The first business to reply usually wins the job. See what your current response time is quietly costing you every month.',
+    html: 'tools/what-slow-replies-cost.html',
   },
   {
-    slug: 'break-even',
-    kind: 'Calculator',
-    title: 'Break-Even Point',
-    blurb: 'The exact revenue you need before a single rand of profit appears — fixed and variable costs accounted for.',
-  },
-  {
-    slug: 'margin',
-    kind: 'Calculator',
-    title: 'Profit Leak Finder',
-    blurb: 'Walk the path from top-line revenue to take-home profit and see precisely where the margin escapes.',
-  },
-  {
-    slug: 'bottleneck',
+    slug: 'the-leaky-bucket',
     kind: 'Diagnostic',
-    title: 'Bottleneck Finder',
-    blurb: 'A short, candid diagnostic that surfaces the single constraint holding your growth back right now.',
+    title: 'The Leaky Bucket',
+    blurb: 'Pouring in more leads won’t help if the bucket leaks. Walk your numbers from enquiry to repeat sale and find the biggest hole.',
+    html: 'tools/the-leaky-bucket.html',
   },
   {
-    slug: 'next-hire',
+    slug: 'wheres-your-bottleneck',
     kind: 'Diagnostic',
-    title: 'Next Hire Advisor',
-    blurb: 'Where you are capacity-bound, and the one role that will unlock the most room when you fill it next.',
+    title: 'Where’s Your Bottleneck?',
+    blurb: 'Your business only ever has one real blocker at a time. Three quick taps surface the constraint holding your growth back right now.',
+    html: 'tools/wheres-your-bottleneck.html',
   },
 ];
 
@@ -197,6 +191,10 @@ function FLToolWidget({ tool }) {
   const isMobile = bp === 'sm' || bp === 'xs';
   const sectionMinH = `calc(100vh - ${FL_STRIP_H}px)`;
 
+  React.useEffect(() => {
+    if (tool && tool.html) flTrackTool(tool.slug, 'open');
+  }, [tool && tool.slug]);
+
   /* Unknown slug → send them back to the gallery. */
   if (!tool) {
     return (
@@ -285,11 +283,11 @@ function FLToolWidget({ tool }) {
                 <span style={{ fontFamily: FL_CAPS, fontSize: 10, letterSpacing: 3, textTransform: 'uppercase', color: FL_GOLD }}>In the workshop</span>
               </div>
               <p style={{ margin: 0, fontSize: 14, color: FL_GRAPHITE, lineHeight: 1.8, maxWidth: 560 }}>
-                We're finishing this one off. It'll open right here — free to use, the same instrument we run inside a quarter. In the meantime, the rest of the toolkit is ready, and a discovery call walks you through the lot against your own numbers.
+                We're finishing this one off. It'll open right here — free to use, the same instrument we run inside a quarter. In the meantime, the rest of the toolkit is ready, and a growth audit walks you through the lot against your own numbers.
               </p>
 
               <div style={{ display: 'flex', gap: 14, marginTop: 12, flexWrap: 'wrap' }}>
-                <FLButton href="#/contact" variant="filled">Book a Discovery Call →</FLButton>
+                <FLButton href="#/contact" variant="filled">Book Your Growth Audit →</FLButton>
                 <FLButton href="#/tools" variant="outline">Browse the Toolkit</FLButton>
               </div>
             </div>
@@ -379,7 +377,7 @@ function FLTools({ slug = null }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <FLEyebrow className="fl-reveal fl-r1">The Toolkit</FLEyebrow>
               <h2 className="fl-reveal fl-r2" style={{ margin: 0, fontFamily: FL_DISPLAY, fontSize: isMobile ? 30 : 44, lineHeight: 1.05, fontWeight: 500, color: FL_NAVY, letterSpacing: -0.4 }}>
-                Eight ways to see <span style={{ fontStyle: 'italic' }}>your</span> numbers clearly.
+                Seven ways to see <span style={{ fontStyle: 'italic' }}>your</span> numbers clearly.
               </h2>
             </div>
             <p className="fl-reveal fl-r3" style={{ margin: 0, fontSize: 14.5, color: FL_GRAPHITE, lineHeight: 1.8, paddingTop: isMobile ? 0 : 8 }}>
@@ -395,39 +393,6 @@ function FLTools({ slug = null }) {
             {FL_TOOLS.map((tool, i) => (
               <FLToolCard key={tool.slug} tool={tool} index={i} isMobile={isMobile} />
             ))}
-          </div>
-        </div>
-      </FLSection>
-
-      {/* ── 3. Closing CTA ── */}
-      <FLSection
-        id="fl-tools-cta"
-        style={{
-          minHeight: sectionMinH,
-          background: FL_IVORY,
-          display: 'flex', alignItems: 'center',
-          padding: isMobile ? '60px 24px' : '60px 40px',
-        }}
-      >
-        <div className="fl-reveal fl-r1" style={{
-          maxWidth: 1100, margin: '0 auto', width: '100%',
-          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          gap: 36, padding: isMobile ? '32px 24px' : '44px 56px',
-          border: `1px solid ${FL_SAND}`, background: FL_IVORY_2,
-          flexDirection: isMobile ? 'column' : 'row',
-        }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 580 }}>
-            <FLEyebrow>The Tools Are A Taste</FLEyebrow>
-            <h3 style={{ margin: 0, fontFamily: FL_DISPLAY, fontSize: isMobile ? 26 : 34, fontWeight: 500, color: FL_NAVY, lineHeight: 1.15, letterSpacing: -0.3 }}>
-              A calculator gives you a number.<br />
-              <span style={{ fontStyle: 'italic', color: FL_GRAPHITE }}>A quarter gives you the plan to move it.</span>
-            </h3>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: isMobile ? 'flex-start' : 'flex-end' }}>
-            <FLButton href="#/contact" variant="filled">Book a Discovery Call →</FLButton>
-            <span style={{ fontFamily: FL_DISPLAY, fontStyle: 'italic', fontSize: 14, color: FL_GRAPHITE, maxWidth: 320, textAlign: isMobile ? 'left' : 'right' }}>
-              We'll run these against your real numbers, together.
-            </span>
           </div>
         </div>
       </FLSection>
