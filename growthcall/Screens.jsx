@@ -68,7 +68,7 @@ function CCHero() {
       <div style={{
         maxWidth: "var(--container-max)", margin: "0 auto",
         padding: "var(--section-y) var(--gutter)",
-        display: "grid", gridTemplateColumns: "1.05fr 0.95fr", gap: "clamp(2rem,5vw,5rem)", alignItems: "center",
+        display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))", gap: "clamp(2rem,5vw,5rem)", alignItems: "center",
       }}>
         <div>
           <Eyebrow color="var(--gold)" style={{ fontSize: "clamp(1.5rem, 3.2vw, 2.25rem)", letterSpacing: "0.08em" }}>
@@ -98,10 +98,11 @@ function CCHero() {
 }
 
 function CCSessionCard() {
-  const rows = [
-    ["We learn your business", "We need to know the systems that make your business work."],
-    ["We find what's holding you back", "This is the clear area where you're lacking the most — and where we'll focus."],
-    ["You leave with the fix", "A plan with a few options — the exact move to make next, and how to make it."],
+  const bonuses = [
+    ["The Landing Page Template", "A proven recipe that turns clicks into customers.", "R2,950"],
+    ["The Ad Template", "A visual example of exactly how a winning ad is built.", "R2,250"],
+    ["Win-Back Lost Leads Scripts", "Exact messages that wake cold leads and missed calls.", "R1,500"],
+    ["The Referral Loop Plan", "How every happy customer brings you the next one.", "R2,000"],
   ];
   return (
     <div style={{
@@ -109,32 +110,64 @@ function CCSessionCard() {
       borderRadius: "var(--radius-sm)", boxShadow: "var(--shadow-raised)",
       border: "1px solid var(--border-on-dark)",
     }}>
-      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: "1.4rem" }}>
-        <div style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: "1.4rem", color: "var(--navy)" }}>
-          What the two hours buy you
+      <div style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: "1.4rem", color: "var(--navy)", marginBottom: "0.9rem" }}>
+        Everything you get
+      </div>
+
+      {/* The call itself */}
+      <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "1rem", alignItems: "start" }}>
+        <span style={{ color: "var(--gold)", fontSize: "1rem", paddingTop: "0.2rem", minWidth: "1rem" }}>&#9670;</span>
+        <div>
+          <div style={{ fontWeight: 600, fontSize: "1.05rem", color: "var(--navy)" }}>The Two-Hour Growth Audit</div>
+          <div style={{ fontSize: "0.875rem", color: "var(--text-muted)", marginTop: "0.15rem" }}>
+            We find what's holding your business back — and you leave with the plan to fix it.
+          </div>
+          <div style={{ display: "flex", alignItems: "baseline", gap: "0.7rem", marginTop: "0.45rem", flexWrap: "wrap" }}>
+            <BrushStrike style={{ fontSize: "1.05rem" }}>R5,000</BrushStrike>
+            <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1.6rem", color: "var(--gold)" }}>R500</span>
+            <span style={{
+              background: "var(--gold)", color: "var(--navy)", fontFamily: "var(--font-body)",
+              fontWeight: 700, fontSize: "0.7rem", letterSpacing: "0.03em",
+              padding: "0.2rem 0.55rem", borderRadius: "999px", transform: "rotate(-2deg)",
+              whiteSpace: "nowrap", alignSelf: "center",
+            }}>90% off</span>
+          </div>
         </div>
       </div>
-      <div style={{ display: "grid", gap: "1.1rem" }}>
-        {rows.map(([h, b]) => (
-          <div key={h} style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "1rem", alignItems: "start" }}>
-            <span style={{
-              color: "var(--gold)", fontSize: "1rem", paddingTop: "0.2rem", minWidth: "1rem",
-            }}>&#9670;</span>
-            <div>
-              <div style={{ fontWeight: 600, fontSize: "1rem", color: "var(--navy)" }}>{h}</div>
-              <div style={{ fontSize: "0.875rem", color: "var(--text-muted)", marginTop: "0.15rem" }}>{b}</div>
-            </div>
-          </div>
-        ))}
-      </div>
+
+      {/* Free bonuses — faded gold box */}
       <div style={{
-        borderTop: "1px solid var(--border-subtle)", marginTop: "1.4rem", paddingTop: "1.2rem",
-        display: "flex", alignItems: "baseline", gap: "0.9rem",
+        marginTop: "1.1rem", padding: "0.95rem 1rem 1.05rem",
+        border: "1px solid rgba(184,137,59,0.45)", background: "rgba(184,137,59,0.06)",
+        borderRadius: "var(--radius-sm)",
       }}>
-        <BrushStrike style={{ fontSize: "1.1rem" }}>R10,000</BrushStrike>
-        <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1.8rem", color: "var(--gold)" }}>
-          R500
-        </span>
+        <div style={{
+          fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.75rem",
+          letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--gold-deep)",
+          marginBottom: "0.75rem",
+        }}>
+          Included for free
+        </div>
+        <div style={{ display: "grid", gap: "0.7rem" }}>
+          {bonuses.map(([h, b, worth]) => (
+            <div key={h} style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "0.8rem", alignItems: "start" }}>
+              <span style={{ color: "var(--gold)", fontSize: "0.85rem", paddingTop: "0.2rem" }}>&#9670;</span>
+              <div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "0.6rem", flexWrap: "wrap" }}>
+                  <span style={{ fontWeight: 600, fontSize: "0.95rem", color: "var(--navy)" }}>{h}</span>
+                  <span style={{ whiteSpace: "nowrap", display: "inline-flex", alignItems: "baseline", gap: "0.45rem" }}>
+                    <BrushStrike style={{ fontSize: "0.85rem" }}>{worth}</BrushStrike>
+                    <span style={{
+                      fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.7rem",
+                      letterSpacing: "0.08em", color: "var(--gold-deep)",
+                    }}>FREE</span>
+                  </span>
+                </div>
+                <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginTop: "0.1rem", lineHeight: 1.35 }}>{b}</div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -250,7 +283,7 @@ function CCBook() {
     <section id="book" style={{ background: "var(--navy)", color: "var(--text-on-dark)" }}>
       <div style={{
         maxWidth: "var(--container-max)", margin: "0 auto", padding: "var(--section-y) var(--gutter)",
-        display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(2rem,5vw,5rem)", alignItems: "center",
+        display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))", gap: "clamp(2rem,5vw,5rem)", alignItems: "center",
       }}>
         <div>
           <Eyebrow color="var(--gold)" style={{ fontSize: "clamp(1.5rem, 3.2vw, 2.25rem)", letterSpacing: "0.08em" }}>
@@ -264,14 +297,14 @@ function CCBook() {
           </p>
           <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "1.4rem", margin: "1.6rem 0" }}>
             <span style={{ position: "relative", display: "inline-flex", alignItems: "baseline", gap: "0.9rem" }}>
-              <BrushStrike style={{ fontSize: "1.2rem", color: "var(--neutral-300)" }}>R10,000</BrushStrike>
+              <BrushStrike style={{ fontSize: "1.2rem", color: "var(--neutral-300)" }}>R5,000</BrushStrike>
               <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "2.25rem", color: "var(--gold)" }}>
                 R500
               </span>
-              <SaveBadge>Save 95%</SaveBadge>
+              <SaveBadge>Save 90%</SaveBadge>
             </span>
             <span style={{ fontSize: "var(--text-sm)", color: "var(--neutral-300)", maxWidth: "22ch" }}>
-              Pay once. Keep the growth going forward.
+              Pay once — all 4 free extras included.
             </span>
           </div>
           <p style={{ color: "var(--neutral-300)", fontSize: "var(--text-sm)", margin: 0 }}>
