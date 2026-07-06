@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Slow Replies Cost You — Forwardline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#181E30; --sand:#D8CCBB; --taupe:#C4B8A3; --warmgrey:#A9A39A;
+    --darkgrey:#6E6A66; --charcoal:#2E2E2E; --paper:#FBF9F5; --lsand:#F5F0E8;
+    --tint:#EFE7D9; --cream:#F3ECE0; --gold:#B8893B;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:'Montserrat',sans-serif; background:var(--paper); color:var(--charcoal);
+       line-height:1.55; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:680px; margin:0 auto; padding:0 22px 64px;}
+
+  header{background:var(--navy); color:var(--cream); padding:38px 22px 30px; text-align:center;}
+  header .kicker{font-size:12px; letter-spacing:3px; text-transform:uppercase; color:var(--sand); font-weight:600;}
+  header h1{font-family:'Playfair Display',serif; font-weight:800; font-size:35px; margin:8px 0 10px; color:#fff;}
+  header p{max-width:540px; margin:0 auto; font-size:15px; color:var(--sand);}
+
+  /* why band */
+  .why{background:var(--tint); border-radius:0 0 12px 12px; padding:16px 20px; margin:0 auto; max-width:680px;
+       font-size:14px; color:var(--navy); text-align:center;}
+  .why b{font-weight:700;}
+
+  .card{background:#fff; border:1px solid var(--sand); border-radius:12px; padding:26px 28px; margin-top:24px;}
+  .step{display:inline-block; background:var(--tint); color:var(--navy); font-weight:600; font-size:11px;
+        letter-spacing:1.5px; text-transform:uppercase; padding:5px 12px; border-radius:14px; margin-bottom:14px;}
+  .card h2{font-family:'Playfair Display',serif; font-size:22px; color:var(--navy); margin-bottom:6px;}
+  .card .lead{font-size:14px; color:var(--darkgrey); margin-bottom:18px;}
+
+  /* fields */
+  .field{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:14px 0; border-bottom:1px solid var(--lsand);}
+  .field:last-child{border-bottom:none;}
+  .field label{font-size:15px; color:var(--charcoal); font-weight:500;}
+  .field label small{display:block; font-size:12px; color:var(--warmgrey); font-weight:400; margin-top:2px; max-width:340px;}
+  .inwrap{position:relative; flex:none;}
+  .inwrap .pre{position:absolute; left:13px; top:50%; transform:translateY(-50%); color:var(--darkgrey); font-size:15px; font-weight:600;}
+  input[type=number]{font-family:'Montserrat',sans-serif; font-size:15px; font-weight:600; color:var(--navy);
+        border:1px solid var(--taupe); border-radius:7px; padding:11px 13px; text-align:right; background:var(--paper); width:140px;}
+  .inwrap input[type=number]{padding-left:30px;}
+  input[type=number]:focus{outline:none; border-color:var(--navy); background:#fff;}
+  input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none; margin:0;}
+
+  /* speed buttons */
+  .speedlabel{font-size:15px; color:var(--charcoal); font-weight:500; margin:4px 0 12px;}
+  .speedlabel small{display:block; font-size:12px; color:var(--warmgrey); font-weight:400; margin-top:2px;}
+  .speeds{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .sp{background:#fff; border:2px solid var(--sand); border-radius:9px; padding:13px 14px; cursor:pointer;
+      text-align:left; transition:all .15s;}
+  .sp:hover{border-color:var(--taupe);}
+  .sp.on{border-color:var(--navy); background:var(--navy); color:#fff;}
+  .sp b{font-size:14.5px; font-weight:600; display:block;}
+  .sp span{font-size:12px; color:var(--darkgrey);}
+  .sp.on span{color:var(--sand);}
+
+  /* result band */
+  .res{display:none; margin-top:24px;}
+  .res.show{display:block;}
+  .rband{background:var(--navy); color:var(--cream); border-radius:12px; padding:28px 26px; text-align:center;}
+  .rband .lbl{font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--sand); font-weight:600;}
+  .rband .big{font-family:'Playfair Display',serif; font-size:52px; color:#fff; line-height:1.05; margin:8px 0 2px;}
+  .rband .big small{font-size:22px; color:var(--sand);}
+  .rband .sub{font-size:14.5px; color:var(--sand); max-width:460px; margin:6px auto 0;}
+  .rband.good .big{color:#fff;}
+
+  /* gain line */
+  .gain{background:var(--tint); color:var(--navy); border-radius:10px; padding:16px 18px; margin-top:14px; font-size:15px; text-align:center;}
+  .gain b{font-weight:700;}
+
+  /* two stat boxes */
+  .twobox{display:grid; grid-template-columns:1fr auto 1fr; gap:14px; align-items:stretch; margin-top:14px;}
+  .sb{background:#fff; border:1px solid var(--sand); border-radius:10px; padding:18px 16px; text-align:center;}
+  .sb .t{font-size:10.5px; letter-spacing:1px; text-transform:uppercase; color:var(--darkgrey); font-weight:600;}
+  .sb .v{font-family:'Playfair Display',serif; font-size:30px; color:var(--navy); margin:6px 0 1px;}
+  .sb .s{font-size:12px; color:var(--warmgrey);}
+  .sb.lead{border-color:var(--navy); border-width:2px;}
+  .sbmid{display:flex; align-items:center; font-size:14px; color:var(--darkgrey); font-weight:600;}
+
+  /* quick wins */
+  .wins{background:#fff; border:1px solid var(--sand); border-radius:12px; padding:22px 24px; margin-top:14px;}
+  .wins h3{font-size:12px; letter-spacing:1px; text-transform:uppercase; color:var(--navy); margin-bottom:12px;}
+  .wins ul{list-style:none;}
+  .wins li{position:relative; padding-left:26px; margin-bottom:10px; font-size:14.5px; color:var(--charcoal);}
+  .wins li:last-child{margin-bottom:0;}
+  .wins li::before{content:"\2192"; position:absolute; left:0; color:var(--taupe); font-weight:700;}
+
+  .nexttool{background:#fff; border:1px solid var(--sand); border-left:5px solid var(--gold); border-radius:10px;
+        padding:16px 18px; font-size:14.5px; margin-top:14px;}
+  .nexttool b{color:var(--navy);}
+
+  /* adjust assumptions */
+  details{margin-top:14px; background:#fff; border:1px dashed var(--taupe); border-radius:10px; padding:0 18px;}
+  details summary{cursor:pointer; font-size:13px; font-weight:600; color:var(--darkgrey); padding:14px 0; list-style:none;}
+  details summary::-webkit-details-marker{display:none;}
+  details summary::before{content:"+ "; color:var(--taupe); font-weight:700;}
+  details[open] summary::before{content:"\2212 ";}
+  .adjrow{display:flex; align-items:center; justify-content:space-between; gap:14px; padding:10px 0; border-top:1px solid var(--lsand); font-size:13.5px; color:var(--charcoal);}
+  .adjrow input{width:90px; padding:8px 10px; font-size:13.5px;}
+  .adjnote{font-size:12px; color:var(--warmgrey); padding:10px 0 16px; border-top:1px solid var(--lsand);}
+
+  .emptyhint{background:#fff; border:1px dashed var(--taupe); border-radius:12px; padding:22px; text-align:center;
+        color:var(--darkgrey); font-size:14.5px; margin-top:24px;}
+
+  .actions{margin:24px auto 0; display:flex; gap:12px; justify-content:center;}
+  button.act{font-family:'Montserrat',sans-serif; font-weight:600; font-size:13.5px; letter-spacing:.5px;
+        border:1px solid var(--navy); background:#fff; color:var(--navy); padding:12px 26px; border-radius:7px; cursor:pointer;}
+  button.act.primary{background:var(--navy); color:var(--cream);} button.act:hover{opacity:.9;}
+
+  footer{margin-top:48px; text-align:center; font-size:11px; letter-spacing:2px; color:var(--warmgrey); text-transform:uppercase; font-weight:600;}
+
+  @media (max-width:560px){
+    .rband .big{font-size:40px;} .speeds{grid-template-columns:1fr;}
+    .twobox{grid-template-columns:1fr;} .sbmid{justify-content:center; padding:2px 0;}
+  }
+  @media print{ .actions,details{display:none;} body{background:#fff;} }
+
+  /* --- brand stamp + soft reach-out (added) --- */
+  .fl-logo{height:44px; width:auto; display:block; margin:0 auto 16px;}
+  .reachout{margin-top:44px; background:#fff; border:1px solid #D8CCBB; border-top:3px solid #B8893B; border-radius:12px; padding:26px 28px; text-align:center;}
+  .reachout p{font-family:'Montserrat',sans-serif; font-size:15px; color:#2E2E2E; max-width:520px; margin:0 auto 16px; line-height:1.55;}
+  .reachout .reachlinks{display:flex; gap:10px 22px; justify-content:center; flex-wrap:wrap;}
+  .reachout .reachlinks a{font-family:'Montserrat',sans-serif; font-weight:700; font-size:15px; color:#181E30; text-decoration:none; border-bottom:2px solid #B8893B; padding-bottom:2px;}
+  .reachout .reachlinks a:hover{color:#B8893B;}
+  @media print{ .reachout{break-inside:avoid;} }
+</style>
+</head>
+<body>
+
+<header>
+  <svg class="fl-logo" role="img" aria-label="ForwardLine" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="56 71 260 201" preserveAspectRatio="xMidYMid meet" version="1.0"><defs><g/><clipPath id="f6e39aeb9b"><path d="M 0.71875 166 L 91 166 L 91 174 L 0.71875 174 Z M 0.71875 166 " clip-rule="nonzero"/></clipPath><clipPath id="3b8b7ee3ce"><path d="M 230 0.121094 L 251 0.121094 L 251 28 L 230 28 Z M 230 0.121094 " clip-rule="nonzero"/></clipPath><clipPath id="47b0f938a2"><path d="M 0.71875 148 L 252 148 L 252 192.359375 L 0.71875 192.359375 Z M 0.71875 148 " clip-rule="nonzero"/></clipPath><clipPath id="b02ab58922"><rect x="0" width="252" y="0" height="193"/></clipPath></defs><g transform="matrix(1, 0, 0, 1, 60, 75)"><g clip-path="url(#b02ab58922)"><g fill="#F4EFE3" fill-opacity="1"><g transform="translate(103.139672, 167.286728)"><g><path d="M 5.390625 0 L 5.390625 -63.421875 L 45.421875 -63.421875 L 45.421875 -56.765625 L 12.859375 -56.765625 L 12.859375 -34.8125 L 40.125 -34.8125 L 40.125 -28.421875 L 12.859375 -28.421875 L 12.859375 0 Z M 5.390625 0 "/></g></g></g><g clip-path="url(#f6e39aeb9b)"><path stroke-linecap="butt" transform="matrix(1.686585, 0.000000000000003881, -0.000000000000003881, 1.686585, 4.221958, 166.842479)" fill="none" stroke-linejoin="miter" d="M 0.00041383 1.999523 L 49.402212 1.999523 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/></g><path stroke-linecap="butt" transform="matrix(0, 1.686585, -1.686585, 0, 90.907259, 90.276697)" fill="none" stroke-linejoin="miter" d="M 0.00038338 1.999368 L 49.402182 1.999368 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/><path stroke-linecap="butt" transform="matrix(1.686585, 0.000000000000001941, -0.000000000000001941, 1.686585, 87.544756, 90.26602)" fill="none" stroke-linejoin="miter" d="M -0.00105993 2.000852 L 49.403055 2.000852 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/><path stroke-linecap="butt" transform="matrix(1.686585, 0.000000000000001941, -0.000000000000001941, 1.686585, 167.494384, 10.316391)" fill="none" stroke-linejoin="miter" d="M 0.00101376 2.001095 L 38.40379 2.001095 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/><path fill="#F4EFE3" d="M 233.953125 3.570312 L 247.445312 13.691406 L 233.953125 23.808594 Z M 233.953125 3.570312 " fill-opacity="1" fill-rule="nonzero"/><g clip-path="url(#3b8b7ee3ce)"><path stroke-linecap="round" transform="matrix(1.686585, 0.000000000000001941, -0.000000000000001941, 1.686585, 167.494384, 10.316391)" fill="none" stroke-linejoin="round" d="M 39.404333 -3.999846 L 47.404043 2.001095 L 39.404333 7.999719 Z M 39.404333 -3.999846 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/></g><g clip-path="url(#47b0f938a2)"><path stroke-linecap="butt" transform="matrix(1.686539, 0.0124639, -0.0124639, 1.686539, 4.232659, 183.708439)" fill="none" stroke-linejoin="miter" d="M -0.000412732 2.000308 L 135.317426 2.000849 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/></g><path stroke-linecap="butt" transform="matrix(0, 1.686585, -1.686585, 0, 170.856889, 10.327055)" fill="none" stroke-linejoin="miter" d="M 0.000634444 1.999612 L 49.402433 1.999612 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/><g fill="#F4EFE3" fill-opacity="1"><g transform="translate(156.362553, 167.286728)"><g><path d="M 5.390625 0 L 5.390625 -63.421875 L 12.859375 -63.421875 L 12.859375 -6.65625 L 45.34375 -6.65625 L 45.34375 0 Z M 5.390625 0 "/></g></g></g></g></g></svg>
+  <div class="kicker">Growth Audit Tools</div>
+  <h1>What Slow Replies Cost You</h1>
+  <p>When a new lead comes in, the first one to reply usually wins the job. Reply slow and the money walks out the door.</p>
+</header>
+<div class="why"><b>Why this matters:</b> people who ask about your work are ready to buy now. Make them wait and they go cold, call someone else, and shop on price. Fast replies win more jobs for the same number of leads.</div>
+
+<div class="wrap">
+
+  <!-- STEP 1 -->
+  <div class="card">
+    <span class="step">Your numbers</span>
+    <h2>Four quick numbers</h2>
+    <p class="lead">Use rough figures if you have to. You can change them any time.</p>
+
+    <div class="field">
+      <label>New leads each month<small>calls, messages and form fills from people who want a price</small></label>
+      <div class="inwrap"><input type="number" id="leads" min="0" step="1" placeholder="0"></div>
+    </div>
+    <div class="field">
+      <label>Value of one job<small>what an average job or sale is worth to you</small></label>
+      <div class="inwrap"><span class="pre">R</span><input type="number" id="jobval" min="0" step="100" placeholder="0"></div>
+    </div>
+    <div class="field">
+      <label>Out of every 10 leads, how many buy now?<small>your win rate today &mdash; half a job is fine, type 0.5</small></label>
+      <div class="inwrap"><input type="number" id="close10" min="0" max="10" step="0.5" placeholder="0"></div>
+    </div>
+
+    <div style="padding-top:16px;">
+      <div class="speedlabel">How fast do you reply now?<small>from when the lead comes in to when you call or message back</small></div>
+      <div class="speeds" id="speeds"></div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="res" id="res">
+    <div class="rband" id="rband">
+      <div class="lbl" id="rlbl">Walking out the door</div>
+      <div class="big" id="rbig">R&mdash;</div>
+      <div class="sub" id="rsub"></div>
+    </div>
+
+    <div class="gain" id="gain"></div>
+
+    <div class="twobox">
+      <div class="sb">
+        <div class="t">Jobs you win now</div>
+        <div class="v" id="jobsNow">0</div>
+        <div class="s">a month</div>
+      </div>
+      <div class="sbmid">&rarr;</div>
+      <div class="sb lead">
+        <div class="t">Jobs at 60-second replies</div>
+        <div class="v" id="jobsFast">0</div>
+        <div class="s">a month</div>
+      </div>
+    </div>
+
+    <div class="wins">
+      <h3>Quick wins &mdash; start here</h3>
+      <ul>
+        <li>Answer every new lead within 60 seconds. Even a quick "got it, calling you now" keeps them warm.</li>
+        <li>Call first, then text or email. A call wins more jobs than a message.</li>
+        <li>Follow up at least twice. Most jobs are lost because nobody followed up.</li>
+        <li>Have someone or something ready to answer after hours and while you are on the job.</li>
+      </ul>
+    </div>
+
+    <div class="nexttool" id="nexttool">
+      The hard part is answering <b>every</b> lead in 60 seconds &mdash; even after hours and while you work.
+      That is what ForwardLine's callback agent, <b>Suzy</b>, does: she answers in about 60 seconds and books the job for you.
+    </div>
+
+    <details>
+      <summary>Adjust the speed effect (advanced)</summary>
+      <div class="adjnote">These are how many times more jobs a 60-second reply tends to win, compared with each slower speed. Change them to match what you see.</div>
+      <div class="adjrow"><span>A few minutes &rarr; 60 seconds</span><div class="inwrap"><input type="number" id="m5" min="1" step="0.1"></div></div>
+      <div class="adjrow"><span>About an hour &rarr; 60 seconds</span><div class="inwrap"><input type="number" id="mh" min="1" step="0.1"></div></div>
+      <div class="adjrow"><span>Same day &rarr; 60 seconds</span><div class="inwrap"><input type="number" id="md" min="1" step="0.1"></div></div>
+      <div class="adjrow"><span>Next day or later &rarr; 60 seconds</span><div class="inwrap"><input type="number" id="ml" min="1" step="0.1"></div></div>
+      <div class="adjnote">Win rate after a faster reply is capped at 9 in 10, to keep the numbers honest.</div>
+    </details>
+
+    <div class="actions">
+      <button class="act" onclick="clearAll()">Clear</button>
+      <button class="act primary" onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </div>
+
+  <!-- EMPTY -->
+  <div class="emptyhint" id="empty">Fill in your numbers above and pick your reply speed to see what slow replies cost you.</div>
+
+    <div class="reachout">
+    <p>Not sure what these numbers are telling you &mdash; or you can see the problem but not how to fix it? That's what we're here for. If you'd like help turning these numbers into a plan to grow, reach out.</p>
+    <div class="reachlinks">
+      <a href="https://wa.me/27630977801">WhatsApp us &middot; 063 097 7801</a>
+      <a href="https://www.forwardline.co.za">forwardline.co.za</a>
+    </div>
+  </div>
+
+  <footer>Forwardline&nbsp; | &nbsp;Find and Fix Business Growth Blockers&nbsp; | &nbsp;Your growth matters to us.</footer>
+</div>
+
+<script>
+  // speed bands: key, label, note, default multiplier (times more jobs at 60s vs this speed)
+  const SPEEDS = [
+    {k:"min",  t:"Within a minute", s:"You are already fast", m:1.0,  fixed:true},
+    {k:"few",  t:"A few minutes",   s:"Usually quick",        m:1.2,  id:"m5"},
+    {k:"hour", t:"About an hour",   s:"Same morning or so",   m:1.6,  id:"mh"},
+    {k:"day",  t:"Same day",        s:"Later that day",       m:2.2,  id:"md"},
+    {k:"late", t:"Next day or later",s:"Or whenever you can",  m:3.0,  id:"ml"},
+  ];
+  const mult = {}; SPEEDS.forEach(s=>mult[s.k]=s.m);
+  const CAP = 0.9; // max win rate after faster reply
+  const rands = n => "R" + Math.round(n).toLocaleString('en-ZA');
+  let speed = null;
+
+  // build speed buttons
+  const speedsEl = document.getElementById('speeds');
+  SPEEDS.forEach(s=>{
+    const b=document.createElement('div'); b.className='sp'; b.dataset.k=s.k;
+    b.innerHTML = `<b>${s.t}</b><span>${s.s}</span>`;
+    b.onclick=()=>{ speed=s.k; document.querySelectorAll('.sp').forEach(x=>x.classList.toggle('on', x.dataset.k===s.k)); calc(); save(); };
+    speedsEl.appendChild(b);
+  });
+  // set default adjust inputs
+  SPEEDS.forEach(s=>{ if(s.id) document.getElementById(s.id).value=s.m; });
+
+  function readMults(){
+    SPEEDS.forEach(s=>{ if(s.id){ const v=parseFloat(document.getElementById(s.id).value); mult[s.k] = (v&&v>=1)? v : s.m; } });
+  }
+
+  function calc(){
+    readMults();
+    const leads = parseFloat(document.getElementById('leads').value)||0;
+    const jobval= parseFloat(document.getElementById('jobval').value)||0;
+    const c10   = parseFloat(document.getElementById('close10').value)||0;
+    const res=document.getElementById('res'), empty=document.getElementById('empty');
+
+    if(leads<=0 || jobval<=0 || c10<=0 || !speed){
+      res.classList.remove('show'); empty.style.display='block'; return;
+    }
+    empty.style.display='none'; res.classList.add('show');
+
+    const c = Math.min(c10,10)/10;                 // current win rate
+    const m = mult[speed]||1;
+    const cFast = Math.min(c*m, CAP);              // win rate at 60s, capped
+    const jobsNow = leads*c;
+    const jobsFast= leads*cFast;
+    const extra = Math.max(jobsFast-jobsNow,0);
+    const lostMo = extra*jobval;
+    const lostYr = lostMo*12;
+
+    const rband=document.getElementById('rband');
+    if(extra<=0.01){
+      rband.classList.add('good');
+      document.getElementById('rlbl').textContent='Good news';
+      document.getElementById('rbig').textContent='You reply fast';
+      document.getElementById('rsub').textContent='At this speed you are already winning about as many jobs as fast replies can get you. Keep it up.';
+      document.getElementById('gain').innerHTML='Now make sure <b>every</b> lead gets that same fast reply &mdash; after hours and while you are on the job too.';
+    }else{
+      rband.classList.remove('good');
+      document.getElementById('rlbl').textContent='Walking out the door';
+      document.getElementById('rbig').innerHTML = rands(lostMo)+' <small>/month</small>';
+      document.getElementById('rsub').innerHTML = `That is about <b style="color:#fff">${rands(lostYr)} a year</b> in jobs you could win with the same leads &mdash; just by replying faster.`;
+      document.getElementById('gain').innerHTML =
+        `Reply in 60 seconds and you win about <b>${(Math.round(extra*10)/10)} more jobs a month</b> &mdash; roughly <b>${rands(lostMo)} more</b>, from leads you already get.`;
+    }
+
+    document.getElementById('jobsNow').textContent  = Math.round(jobsNow*10)/10;
+    document.getElementById('jobsFast').textContent = Math.round(jobsFast*10)/10;
+  }
+
+  function clearAll(){
+    ['leads','jobval','close10'].forEach(id=>document.getElementById(id).value='');
+    speed=null; document.querySelectorAll('.sp').forEach(x=>x.classList.remove('on'));
+    SPEEDS.forEach(s=>{ if(s.id) document.getElementById(s.id).value=s.m; });
+    calc(); try{localStorage.removeItem('fl_slowreplies');}catch(e){}
+  }
+  function save(){
+    try{
+      const a={}; SPEEDS.forEach(s=>{ if(s.id) a[s.id]=document.getElementById(s.id).value; });
+      localStorage.setItem('fl_slowreplies', JSON.stringify({
+        leads:document.getElementById('leads').value, jobval:document.getElementById('jobval').value,
+        close10:document.getElementById('close10').value, speed, adj:a }));
+    }catch(e){}
+  }
+  function load(){
+    try{
+      const s=JSON.parse(localStorage.getItem('fl_slowreplies')||'null'); if(!s) return;
+      document.getElementById('leads').value=s.leads||'';
+      document.getElementById('jobval').value=s.jobval||'';
+      document.getElementById('close10').value=s.close10||'';
+      if(s.adj) Object.keys(s.adj).forEach(k=>{ const el=document.getElementById(k); if(el&&s.adj[k]!=='') el.value=s.adj[k]; });
+      if(s.speed){ speed=s.speed; document.querySelectorAll('.sp').forEach(x=>x.classList.toggle('on', x.dataset.k===s.speed)); }
+    }catch(e){}
+  }
+  document.addEventListener('input', e=>{ if(e.target.matches('input')) { calc(); save(); } });
+  load(); calc();
+</script>
+</body>
+</html>

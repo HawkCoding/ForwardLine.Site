@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What One Customer Is Worth to You — Forwardline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#181E30; --sand:#D8CCBB; --taupe:#C4B8A3; --warmgrey:#A9A39A;
+    --darkgrey:#6E6A66; --charcoal:#2E2E2E; --paper:#FBF9F5; --lsand:#F5F0E8;
+    --tint:#EFE7D9; --cream:#F3ECE0;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:'Montserrat',sans-serif; background:var(--paper); color:var(--charcoal); line-height:1.55; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:680px; margin:0 auto; padding:0 22px 64px;}
+  header{background:var(--navy); color:var(--cream); padding:38px 22px 32px; text-align:center;}
+  header .kicker{font-size:12px; letter-spacing:3px; text-transform:uppercase; color:var(--sand); font-weight:600;}
+  header h1{font-family:'Playfair Display',serif; font-weight:800; font-size:33px; margin:8px 0 8px; color:#fff;}
+  header p{max-width:520px; margin:0 auto; font-size:15px; color:var(--sand);}
+  .card{background:#fff; border:1px solid var(--sand); border-radius:12px; padding:26px 28px; margin-top:24px;}
+  .step{display:inline-block; background:var(--tint); color:var(--navy); font-weight:600; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; padding:5px 12px; border-radius:14px; margin-bottom:14px;}
+  .card h2{font-family:'Playfair Display',serif; font-size:22px; color:var(--navy); margin-bottom:6px;}
+  .card .lead{font-size:14px; color:var(--darkgrey); margin-bottom:20px;}
+  .field{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:15px 0; border-bottom:1px solid var(--lsand);}
+  .field:last-child{border-bottom:none;}
+  .field .lw{display:flex; align-items:center; gap:12px;}
+  .field .n{flex:none; width:26px; height:26px; border-radius:50%; background:var(--tint); color:var(--navy); font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center;}
+  .field label{font-size:15px; color:var(--charcoal); font-weight:500;}
+  .field label small{display:block; font-size:12px; color:var(--warmgrey); font-weight:400; margin-top:2px;}
+  .inwrap{position:relative; flex:none;}
+  .inwrap .pre{position:absolute; left:13px; top:50%; transform:translateY(-50%); color:var(--darkgrey); font-size:15px; font-weight:600;}
+  .inwrap .suf{position:absolute; right:13px; top:50%; transform:translateY(-50%); color:var(--warmgrey); font-size:12px;}
+  input[type=number]{font-family:'Montserrat',sans-serif; font-size:15px; font-weight:600; color:var(--navy); border:1px solid var(--taupe); border-radius:7px; padding:11px 13px; text-align:right; background:var(--paper); width:140px;}
+  .inwrap.money input{padding-left:30px;} .inwrap.unit input{padding-right:54px;}
+  input[type=number]:focus{outline:none; border-color:var(--navy); background:#fff;}
+  input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none; margin:0;}
+  .result{background:var(--navy); color:var(--cream); border-radius:12px; padding:28px 26px; margin-top:24px; text-align:center;}
+  .result.dim .big{color:var(--warmgrey);}
+  .result .lbl{font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--sand); font-weight:600;}
+  .result .big{font-family:'Playfair Display',serif; font-size:50px; color:#fff; line-height:1.05; margin:8px 0 2px;}
+  .result .s{font-size:13.5px; color:var(--sand);}
+  .example{background:var(--tint); border-radius:10px; padding:14px 18px; font-size:14px; color:var(--charcoal); margin-top:14px;}
+  .example b{color:var(--navy);}
+  .means{background:#fff; border:1px solid var(--sand); border-left:5px solid var(--navy); border-radius:10px; padding:16px 18px; font-size:14px; margin-top:14px; color:var(--charcoal);}
+  .means b{color:var(--navy);}
+  .actions{margin:24px auto 0; display:flex; gap:12px; justify-content:center;}
+  button.act{font-family:'Montserrat',sans-serif; font-weight:600; font-size:13.5px; letter-spacing:.5px; border:1px solid var(--navy); background:#fff; color:var(--navy); padding:12px 26px; border-radius:7px; cursor:pointer;}
+  button.act.primary{background:var(--navy); color:var(--cream);} button.act:hover{opacity:.9;}
+  footer{margin-top:48px; text-align:center; font-size:11px; letter-spacing:2px; color:var(--warmgrey); text-transform:uppercase; font-weight:600;}
+  @media (max-width:560px){ .result .big{font-size:40px;} input[type=number]{width:120px;} }
+  @media print{ .actions{display:none;} body{background:#fff;} }
+
+  /* --- brand stamp + soft reach-out (added) --- */
+  .fl-logo{height:44px; width:auto; display:block; margin:0 auto 16px;}
+  .reachout{margin-top:44px; background:#fff; border:1px solid #D8CCBB; border-top:3px solid #B8893B; border-radius:12px; padding:26px 28px; text-align:center;}
+  .reachout p{font-family:'Montserrat',sans-serif; font-size:15px; color:#2E2E2E; max-width:520px; margin:0 auto 16px; line-height:1.55;}
+  .reachout .reachlinks{display:flex; gap:10px 22px; justify-content:center; flex-wrap:wrap;}
+  .reachout .reachlinks a{font-family:'Montserrat',sans-serif; font-weight:700; font-size:15px; color:#181E30; text-decoration:none; border-bottom:2px solid #B8893B; padding-bottom:2px;}
+  .reachout .reachlinks a:hover{color:#B8893B;}
+  @media print{ .reachout{break-inside:avoid;} }
+</style>
+</head>
+<body>
+<header>
+  <svg class="fl-logo" role="img" aria-label="ForwardLine" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="56 71 260 201" preserveAspectRatio="xMidYMid meet" version="1.0"><defs><g/><clipPath id="f6e39aeb9b"><path d="M 0.71875 166 L 91 166 L 91 174 L 0.71875 174 Z M 0.71875 166 " clip-rule="nonzero"/></clipPath><clipPath id="3b8b7ee3ce"><path d="M 230 0.121094 L 251 0.121094 L 251 28 L 230 28 Z M 230 0.121094 " clip-rule="nonzero"/></clipPath><clipPath id="47b0f938a2"><path d="M 0.71875 148 L 252 148 L 252 192.359375 L 0.71875 192.359375 Z M 0.71875 148 " clip-rule="nonzero"/></clipPath><clipPath id="b02ab58922"><rect x="0" width="252" y="0" height="193"/></clipPath></defs><g transform="matrix(1, 0, 0, 1, 60, 75)"><g clip-path="url(#b02ab58922)"><g fill="#F4EFE3" fill-opacity="1"><g transform="translate(103.139672, 167.286728)"><g><path d="M 5.390625 0 L 5.390625 -63.421875 L 45.421875 -63.421875 L 45.421875 -56.765625 L 12.859375 -56.765625 L 12.859375 -34.8125 L 40.125 -34.8125 L 40.125 -28.421875 L 12.859375 -28.421875 L 12.859375 0 Z M 5.390625 0 "/></g></g></g><g clip-path="url(#f6e39aeb9b)"><path stroke-linecap="butt" transform="matrix(1.686585, 0.000000000000003881, -0.000000000000003881, 1.686585, 4.221958, 166.842479)" fill="none" stroke-linejoin="miter" d="M 0.00041383 1.999523 L 49.402212 1.999523 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/></g><path stroke-linecap="butt" transform="matrix(0, 1.686585, -1.686585, 0, 90.907259, 90.276697)" fill="none" stroke-linejoin="miter" d="M 0.00038338 1.999368 L 49.402182 1.999368 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/><path stroke-linecap="butt" transform="matrix(1.686585, 0.000000000000001941, -0.000000000000001941, 1.686585, 87.544756, 90.26602)" fill="none" stroke-linejoin="miter" d="M -0.00105993 2.000852 L 49.403055 2.000852 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/><path stroke-linecap="butt" transform="matrix(1.686585, 0.000000000000001941, -0.000000000000001941, 1.686585, 167.494384, 10.316391)" fill="none" stroke-linejoin="miter" d="M 0.00101376 2.001095 L 38.40379 2.001095 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/><path fill="#F4EFE3" d="M 233.953125 3.570312 L 247.445312 13.691406 L 233.953125 23.808594 Z M 233.953125 3.570312 " fill-opacity="1" fill-rule="nonzero"/><g clip-path="url(#3b8b7ee3ce)"><path stroke-linecap="round" transform="matrix(1.686585, 0.000000000000001941, -0.000000000000001941, 1.686585, 167.494384, 10.316391)" fill="none" stroke-linejoin="round" d="M 39.404333 -3.999846 L 47.404043 2.001095 L 39.404333 7.999719 Z M 39.404333 -3.999846 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/></g><g clip-path="url(#47b0f938a2)"><path stroke-linecap="butt" transform="matrix(1.686539, 0.0124639, -0.0124639, 1.686539, 4.232659, 183.708439)" fill="none" stroke-linejoin="miter" d="M -0.000412732 2.000308 L 135.317426 2.000849 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/></g><path stroke-linecap="butt" transform="matrix(0, 1.686585, -1.686585, 0, 170.856889, 10.327055)" fill="none" stroke-linejoin="miter" d="M 0.000634444 1.999612 L 49.402433 1.999612 " stroke="#F4EFE3" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/><g fill="#F4EFE3" fill-opacity="1"><g transform="translate(156.362553, 167.286728)"><g><path d="M 5.390625 0 L 5.390625 -63.421875 L 12.859375 -63.421875 L 12.859375 -6.65625 L 45.34375 -6.65625 L 45.34375 0 Z M 5.390625 0 "/></g></g></g></g></g></svg>
+  <div class="kicker">Growth Audit Tools</div>
+  <h1>What One Customer Is Worth to You</h1>
+  <p>Fill in three numbers. See how much money one customer brings you over time.</p>
+</header>
+<div class="wrap">
+  <div class="card">
+    <span class="step">Fill in these three numbers</span>
+    <h2>How much does one customer bring you?</h2>
+    <p class="lead">A guess is fine for each one. We put them together below.</p>
+    <div class="field">
+      <div class="lw"><span class="n">1</span><label>What you make from one sale<small>on average</small></label></div>
+      <div class="inwrap money"><span class="pre">R</span><input type="number" id="sale" min="0" step="100" placeholder="0"></div>
+    </div>
+    <div class="field">
+      <div class="lw"><span class="n">2</span><label>How many times a year they buy</label></div>
+      <div class="inwrap unit"><input type="number" id="times" min="0" step="1" placeholder="0"><span class="suf">times</span></div>
+    </div>
+    <div class="field">
+      <div class="lw"><span class="n">3</span><label>How many years they stay</label></div>
+      <div class="inwrap unit"><input type="number" id="years" min="0" step="1" placeholder="0"><span class="suf">years</span></div>
+    </div>
+  </div>
+
+  <div class="result dim" id="resultBox">
+    <div class="lbl">What one customer is worth to you</div>
+    <div class="big" id="ltvVal">R—</div>
+    <div class="s" id="ltvSub">Box 1 × box 2 × box 3.</div>
+  </div>
+
+  <div class="example">
+    <b>Example:</b> You make R800 a sale. They buy 3 times a year, for 4 years. R800 × 3 × 4 = R9,600. That's what one customer is really worth.
+  </div>
+  <div class="means">
+    <b>What this means.</b> Most owners only think about the first sale — and undersell everything after it. Now compare this to what a customer <b>costs</b> you to win in the first place. A good rule: a customer should be worth at least <b>3× more</b> than they cost.
+  </div>
+
+  <div class="actions">
+    <button class="act" onclick="clearAll()">Clear</button>
+    <button class="act primary" onclick="window.print()">Print / Save as PDF</button>
+  </div>
+    <div class="reachout">
+    <p>Not sure what these numbers are telling you &mdash; or you can see the problem but not how to fix it? That's what we're here for. If you'd like help turning these numbers into a plan to grow, reach out.</p>
+    <div class="reachlinks">
+      <a href="https://wa.me/27630977801">WhatsApp us &middot; 063 097 7801</a>
+      <a href="https://www.forwardline.co.za">forwardline.co.za</a>
+    </div>
+  </div>
+
+  <footer>Forwardline&nbsp; | &nbsp;Find and Fix Business Growth Blockers&nbsp; | &nbsp;Your growth matters to us.</footer>
+</div>
+<script>
+const rands = n => "R" + Math.round(n).toLocaleString('en-ZA');
+const $ = id => document.getElementById(id);
+function calc(){
+  const sale=parseFloat($('sale').value)||0, times=parseFloat($('times').value)||0, years=parseFloat($('years').value)||0;
+  const box=$('resultBox');
+  if(sale<=0||times<=0||years<=0){ box.classList.add('dim'); $('ltvVal').textContent='R—'; $('ltvSub').textContent='Box 1 × box 2 × box 3.'; save(); return; }
+  box.classList.remove('dim');
+  const ltv=sale*times*years;
+  $('ltvVal').textContent=rands(ltv);
+  $('ltvSub').textContent=`${rands(sale)} × ${times} a year × ${years} ${years===1?'year':'years'}.`;
+  save();
+}
+function clearAll(){ ['sale','times','years'].forEach(id=>$(id).value=''); calc(); try{localStorage.removeItem('fl_ltv');}catch(e){} }
+function save(){ try{ localStorage.setItem('fl_ltv', JSON.stringify({sale:$('sale').value,times:$('times').value,years:$('years').value})); }catch(e){} }
+function load(){ try{ const s=JSON.parse(localStorage.getItem('fl_ltv')||'null'); if(!s) return; ['sale','times','years'].forEach(id=>{ if(s[id]!==undefined) $(id).value=s[id]; }); }catch(e){} }
+document.addEventListener('input', e=>{ if(e.target.matches('input')) calc(); });
+load(); calc();
+</script>
+</body>
+</html>

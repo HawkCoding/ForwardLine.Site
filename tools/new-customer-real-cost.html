@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>You Don't Pay in Rands. You Pay in Hours. — Forwardline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#181E30; --sand:#D8CCBB; --taupe:#C4B8A3; --warmgrey:#A9A39A;
+    --darkgrey:#6E6A66; --charcoal:#2E2E2E; --paper:#FBF9F5; --lsand:#F5F0E8;
+    --tint:#EFE7D9; --cream:#FCF8F1; --ink:#2b2b2b;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:'EB Garamond',Georgia,serif; background:var(--cream); color:var(--ink); line-height:1.6; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:600px; margin:0 auto; padding:44px 26px 60px; text-align:center;}
+  .tag{font-family:'Montserrat',sans-serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--warmgrey); font-weight:600; margin-bottom:20px;}
+  h1{font-size:44px; font-weight:600; line-height:1.12; color:var(--navy); margin-bottom:16px;}
+  .intro{font-size:18px; color:var(--darkgrey); max-width:460px; margin:0 auto 8px;}
+  .rule{width:54px; height:2px; background:var(--taupe); margin:30px auto;}
+  .stepnum{width:40px; height:40px; border-radius:50%; border:2px solid var(--navy); color:var(--navy); font-family:'Montserrat',sans-serif; font-weight:600; font-size:17px; display:flex; align-items:center; justify-content:center; margin:0 auto 12px;}
+  .q{font-size:23px; color:var(--navy); font-weight:600; margin-bottom:4px;}
+  .hint{font-size:15px; color:var(--warmgrey); font-style:italic; margin-bottom:14px;}
+  .inwrap{position:relative; display:inline-block;}
+  .inwrap .pre{position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--darkgrey); font-size:19px; font-family:'EB Garamond',serif;}
+  input[type=number]{font-family:'EB Garamond',serif; font-size:22px; font-weight:600; color:var(--navy); border:none; border-bottom:2px solid var(--taupe); background:transparent; padding:8px 10px; text-align:center; width:180px;}
+  .inwrap.money input{padding-left:28px;}
+  input[type=number]:focus{outline:none; border-color:var(--navy);}
+  input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none; margin:0;}
+  .result{margin-top:12px; padding:28px 24px; background:var(--navy); color:var(--cream); border-radius:12px;}
+  .result.dim{opacity:.55;}
+  .result .lbl{font-family:'Montserrat',sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--sand); font-weight:600;}
+  .result .big{font-size:52px; color:#fff; line-height:1.05; margin:8px 0 4px;}
+  .result .s{font-size:16px; color:var(--sand);}
+  .example{font-size:15px; color:var(--darkgrey); font-style:italic; margin-top:22px;}
+  .trap{font-size:18px; color:var(--navy); max-width:460px; margin:26px auto 0; font-weight:500;}
+  .credit{font-family:'Montserrat',sans-serif; font-size:10.5px; letter-spacing:2px; text-transform:uppercase; color:var(--warmgrey); margin-top:30px;}
+  .actions{margin-top:26px; display:flex; gap:12px; justify-content:center;}
+  button.act{font-family:'Montserrat',sans-serif; font-weight:600; font-size:13px; letter-spacing:.5px; border:1px solid var(--navy); background:transparent; color:var(--navy); padding:11px 24px; border-radius:7px; cursor:pointer;}
+  button.act.primary{background:var(--navy); color:var(--cream);} button.act:hover{opacity:.9;}
+  footer{margin-top:40px; font-family:'Montserrat',sans-serif; text-align:center; font-size:10.5px; letter-spacing:2px; color:var(--warmgrey); text-transform:uppercase; font-weight:600;}
+  @media (max-width:560px){ h1{font-size:34px;} .result .big{font-size:40px;} }
+  @media print{ .actions{display:none;} body{background:#fff;} }
+
+  /* --- brand stamp + soft reach-out (added) --- */
+  .fl-logo{height:44px; width:auto; display:block; margin:0 auto 16px;}
+  .reachout{margin-top:44px; background:#fff; border:1px solid #D8CCBB; border-top:3px solid #B8893B; border-radius:12px; padding:26px 28px; text-align:center;}
+  .reachout p{font-family:'Montserrat',sans-serif; font-size:15px; color:#2E2E2E; max-width:520px; margin:0 auto 16px; line-height:1.55;}
+  .reachout .reachlinks{display:flex; gap:10px 22px; justify-content:center; flex-wrap:wrap;}
+  .reachout .reachlinks a{font-family:'Montserrat',sans-serif; font-weight:700; font-size:15px; color:#181E30; text-decoration:none; border-bottom:2px solid #B8893B; padding-bottom:2px;}
+  .reachout .reachlinks a:hover{color:#B8893B;}
+  @media print{ .reachout{break-inside:avoid;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <svg class="fl-logo" role="img" aria-label="ForwardLine" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="56 71 260 201" preserveAspectRatio="xMidYMid meet" version="1.0"><defs><g/><clipPath id="f6e39aeb9b"><path d="M 0.71875 166 L 91 166 L 91 174 L 0.71875 174 Z M 0.71875 166 " clip-rule="nonzero"/></clipPath><clipPath id="3b8b7ee3ce"><path d="M 230 0.121094 L 251 0.121094 L 251 28 L 230 28 Z M 230 0.121094 " clip-rule="nonzero"/></clipPath><clipPath id="47b0f938a2"><path d="M 0.71875 148 L 252 148 L 252 192.359375 L 0.71875 192.359375 Z M 0.71875 148 " clip-rule="nonzero"/></clipPath><clipPath id="b02ab58922"><rect x="0" width="252" y="0" height="193"/></clipPath></defs><g transform="matrix(1, 0, 0, 1, 60, 75)"><g clip-path="url(#b02ab58922)"><g fill="#181E30" fill-opacity="1"><g transform="translate(103.139672, 167.286728)"><g><path d="M 5.390625 0 L 5.390625 -63.421875 L 45.421875 -63.421875 L 45.421875 -56.765625 L 12.859375 -56.765625 L 12.859375 -34.8125 L 40.125 -34.8125 L 40.125 -28.421875 L 12.859375 -28.421875 L 12.859375 0 Z M 5.390625 0 "/></g></g></g><g clip-path="url(#f6e39aeb9b)"><path stroke-linecap="butt" transform="matrix(1.686585, 0.000000000000003881, -0.000000000000003881, 1.686585, 4.221958, 166.842479)" fill="none" stroke-linejoin="miter" d="M 0.00041383 1.999523 L 49.402212 1.999523 " stroke="#181E30" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/></g><path stroke-linecap="butt" transform="matrix(0, 1.686585, -1.686585, 0, 90.907259, 90.276697)" fill="none" stroke-linejoin="miter" d="M 0.00038338 1.999368 L 49.402182 1.999368 " stroke="#181E30" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/><path stroke-linecap="butt" transform="matrix(1.686585, 0.000000000000001941, -0.000000000000001941, 1.686585, 87.544756, 90.26602)" fill="none" stroke-linejoin="miter" d="M -0.00105993 2.000852 L 49.403055 2.000852 " stroke="#181E30" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/><path stroke-linecap="butt" transform="matrix(1.686585, 0.000000000000001941, -0.000000000000001941, 1.686585, 167.494384, 10.316391)" fill="none" stroke-linejoin="miter" d="M 0.00101376 2.001095 L 38.40379 2.001095 " stroke="#181E30" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/><path fill="#181E30" d="M 233.953125 3.570312 L 247.445312 13.691406 L 233.953125 23.808594 Z M 233.953125 3.570312 " fill-opacity="1" fill-rule="nonzero"/><g clip-path="url(#3b8b7ee3ce)"><path stroke-linecap="round" transform="matrix(1.686585, 0.000000000000001941, -0.000000000000001941, 1.686585, 167.494384, 10.316391)" fill="none" stroke-linejoin="round" d="M 39.404333 -3.999846 L 47.404043 2.001095 L 39.404333 7.999719 Z M 39.404333 -3.999846 " stroke="#181E30" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/></g><g clip-path="url(#47b0f938a2)"><path stroke-linecap="butt" transform="matrix(1.686539, 0.0124639, -0.0124639, 1.686539, 4.232659, 183.708439)" fill="none" stroke-linejoin="miter" d="M -0.000412732 2.000308 L 135.317426 2.000849 " stroke="#181E30" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/></g><path stroke-linecap="butt" transform="matrix(0, 1.686585, -1.686585, 0, 170.856889, 10.327055)" fill="none" stroke-linejoin="miter" d="M 0.000634444 1.999612 L 49.402433 1.999612 " stroke="#181E30" stroke-width="4" stroke-opacity="1" stroke-miterlimit="4"/><g fill="#181E30" fill-opacity="1"><g transform="translate(156.362553, 167.286728)"><g><path d="M 5.390625 0 L 5.390625 -63.421875 L 12.859375 -63.421875 L 12.859375 -6.65625 L 45.34375 -6.65625 L 45.34375 0 Z M 5.390625 0 "/></g></g></g></g></g></svg>
+  <div class="tag">Growth Audit Tools</div>
+  <h1>You Don't Pay in Rands.<br>You Pay in Hours.</h1>
+  <p class="intro">You don't pay for ads — so your customers feel free. Let's find out what one new customer really costs you.</p>
+
+  <div class="rule"></div>
+
+  <div class="stepnum">1</div>
+  <div class="q">Hours a month getting customers</div>
+  <div class="hint">referrals · networking · posting · following people up</div>
+  <div class="inwrap"><input type="number" id="hours" min="0" step="1" placeholder="hours"></div>
+
+  <div class="rule"></div>
+
+  <div class="stepnum">2</div>
+  <div class="q">What one hour of your time is worth</div>
+  <div class="hint">not sure? use what you'd pay someone to do your work</div>
+  <div class="inwrap money"><span class="pre">R</span><input type="number" id="rate" min="0" step="10" placeholder="per hour"></div>
+
+  <div class="rule"></div>
+
+  <div class="stepnum">3</div>
+  <div class="q">New customers in a normal month</div>
+  <div class="hint">only the new ones — a guess is fine</div>
+  <div class="inwrap"><input type="number" id="cust" min="0" step="1" placeholder="number"></div>
+
+  <div class="rule"></div>
+
+  <div class="result dim" id="resultBox">
+    <div class="lbl">What one new customer really costs you</div>
+    <div class="big" id="val">R—</div>
+    <div class="s" id="sub">your hours × what your time is worth ÷ new customers</div>
+  </div>
+
+  <p class="example" id="example">Example: 8 hours × R150 an hour = R1,200. R1,200 ÷ 4 customers = R300 each.</p>
+
+  <p class="trap">Your customers are nearly free — but you can't turn “free” up when you need more. That's the trap.</p>
+
+  <div class="actions">
+    <button class="act" onclick="clearAll()">Clear</button>
+    <button class="act primary" onclick="window.print()">Print / Save as PDF</button>
+  </div>
+  <div class="credit">On the idea of Alex Hormozi</div>
+    <div class="reachout">
+    <p>Not sure what these numbers are telling you &mdash; or you can see the problem but not how to fix it? That's what we're here for. If you'd like help turning these numbers into a plan to grow, reach out.</p>
+    <div class="reachlinks">
+      <a href="https://wa.me/27630977801">WhatsApp us &middot; 063 097 7801</a>
+      <a href="https://www.forwardline.co.za">forwardline.co.za</a>
+    </div>
+  </div>
+
+  <footer>Forwardline&nbsp; | &nbsp;Find and Fix Business Growth Blockers&nbsp; | &nbsp;Your growth matters to us.</footer>
+</div>
+<script>
+const rands = n => "R" + Math.round(n).toLocaleString('en-ZA');
+const $ = id => document.getElementById(id);
+function calc(){
+  const hours=parseFloat($('hours').value)||0, rate=parseFloat($('rate').value)||0, cust=parseFloat($('cust').value)||0;
+  const box=$('resultBox');
+  if(hours<=0||rate<=0||cust<=0){ box.classList.add('dim'); $('val').textContent='R—'; $('sub').textContent='your hours × what your time is worth ÷ new customers'; save(); return; }
+  box.classList.remove('dim');
+  const cost=hours*rate/cust;
+  $('val').textContent=rands(cost);
+  $('sub').textContent=`${hours} hours × ${rands(rate)} ÷ ${cust} new ${cust===1?'customer':'customers'}.`;
+  save();
+}
+function clearAll(){ ['hours','rate','cust'].forEach(id=>$(id).value=''); calc(); try{localStorage.removeItem('fl_noads');}catch(e){} }
+function save(){ try{ localStorage.setItem('fl_noads', JSON.stringify({hours:$('hours').value,rate:$('rate').value,cust:$('cust').value})); }catch(e){} }
+function load(){ try{ const s=JSON.parse(localStorage.getItem('fl_noads')||'null'); if(!s) return; ['hours','rate','cust'].forEach(id=>{ if(s[id]!==undefined) $(id).value=s[id]; }); }catch(e){} }
+document.addEventListener('input', e=>{ if(e.target.matches('input')) calc(); });
+load(); calc();
+</script>
+</body>
+</html>
