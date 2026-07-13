@@ -63,18 +63,20 @@ function FLTestimonialRotator({ isMobile }) {
         lineHeight:0.5, color: FL_SAND_2, fontStyle:'italic', fontWeight:500,
       }}>"</span>
 
-      {/* Quote slot — fixed-ish min-height to avoid layout jump between quotes */}
+      {/* Quote slot — all quotes are stacked in a single CSS-grid cell
+          (every child at grid-area 1/1). They overlap for the crossfade,
+          but the cell auto-sizes to the TALLEST quote, so a longer quote
+          can never overflow and collide with the attribution below.
+          Never give this slot a fixed height: it must grow with content. */}
       <div className="fl-reveal fl-r3" style={{
-        position:'relative', width:'100%', maxWidth:880,
-        minHeight: isMobile ? 148 : 148,
-        display:'flex', alignItems:'flex-start', justifyContent:'center',
+        display:'grid', width:'100%', maxWidth:880,
       }}>
         {FL_TESTIMONIALS.map((row, i) => (
           <p
             key={i}
             aria-hidden={i !== idx}
             style={{
-              position:'absolute', inset:0, margin:0,
+              gridArea:'1 / 1', margin:0,
               fontFamily: FL_DISPLAY,
               fontSize: isMobile ? 26 : 38,
               lineHeight:1.32, color: FL_IVORY_2, fontWeight:500, letterSpacing:-0.3,
@@ -89,15 +91,17 @@ function FLTestimonialRotator({ isMobile }) {
         ))}
       </div>
 
-      {/* Attribution — also crossfades with the quote */}
+      {/* Attribution — also crossfades with the quote. Same grid-cell
+          stacking as the quote slot so it sizes to its tallest row
+          (a longer name can't clip). No fixed height here either. */}
       <div className="fl-reveal fl-r4" style={{
-        position:'relative', height: 50, marginTop:8, width: 280,
+        display:'grid', marginTop:8, minWidth: 280,
       }}>
         {FL_TESTIMONIALS.map((row, i) => (
           <div key={i}
             aria-hidden={i !== idx}
             style={{
-              position:'absolute', inset:0,
+              gridArea:'1 / 1',
               display:'flex', alignItems:'center', justifyContent:'center', gap:14,
               opacity: i === idx ? 1 : 0,
               transition: `opacity ${FADE_MS}ms ${FADE_EASE}`,
