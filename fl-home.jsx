@@ -10,7 +10,13 @@
 
 /* ── Testimonial rotator ──
    Two quotes from past clients. Auto-advances every 7s with a
-   gentle crossfade; pause on hover; manual dots for control. */
+   gentle crossfade; pause on hover; manual dots for control.
+
+   COPY-LENGTH RULE — keep each quote short enough to fit ~4 lines on
+   desktop (roughly 220 characters max). The slot grows to fit its
+   text, so a longer quote won't overlap — but it CAN push the whole
+   section past one viewport and break the scroll-snap. Stay at or
+   under Andre's length below; if a quote is longer, trim it. */
 const FL_TESTIMONIALS = [
   {
     initial: 'R',
