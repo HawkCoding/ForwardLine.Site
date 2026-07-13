@@ -9,26 +9,20 @@
    ───────────────────────────────────────────── */
 
 /* ── Testimonial rotator ──
-   Three quotes from past clients. Auto-advances every 7s with a
+   Two quotes from past clients. Auto-advances every 7s with a
    gentle crossfade; pause on hover; manual dots for control. */
 const FL_TESTIMONIALS = [
   {
     initial: 'R',
     name: 'Ronald',
     location: 'Client · South Africa',
-    quote: 'I can\u2019t believe you do it at this price. It seems like it\u2019s worth so much more.',
+    quote: 'He asks the right questions, helps you see opportunities you may have overlooked, and unlocks things you didn\u2019t even realize were holding you back.',
   },
   {
     initial: 'A',
-    name: 'Andrei',
+    name: 'Andre',
     location: 'Client · South Africa',
-    quote: 'I knew nothing about marketing. With their help, I now run several campaigns at once \u2014 and it has brought in more clients than I can count.',
-  },
-  {
-    initial: 'C',
-    name: 'Carmen',
-    location: 'Client · South Africa',
-    quote: 'Thank you for putting a real system in place. We had been doing it by hand for years; since then, we have reached heights we had stopped imagining.',
+    quote: 'What truly sets Hancke apart is his ability to fully invest himself in your business. Your vision and success become his own, and he approaches every challenge with a level of strategic thinking that is truly unique.',
   },
 ];
 
